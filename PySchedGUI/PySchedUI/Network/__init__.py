@@ -5,7 +5,7 @@ Created on 2013-01-15 12:21
 @author: Martin Predki
 '''
 
-from PySchedUI.Common import readBytesFromFile
+from PySchedGUI.PySchedUI.Common import readBytesFromFile
 from SSHTunnel import SSHTunnel
 
 import socket

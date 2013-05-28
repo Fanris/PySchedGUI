@@ -11,4 +11,4 @@ PySched - A python network Scheduler
 	4. Start the user interface with the following parameters  
 		- --key=Path/To/PrivateKey  
 		- --user=Your username (optional)  
-		- ui (to start the "graphical" UI)  
+		- gui (to start the "graphical" UI)  

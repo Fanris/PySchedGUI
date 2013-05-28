@@ -8,8 +8,8 @@ Created on 2013-01-15 13:23
 
 from PyQt4 import QtGui
 
-from PySchedUI import PySchedUI
-from GUI import GUI
+from PySchedGUI.PySchedUI import PySchedUI
+from PySchedGUI.GUI import GUI
 
 import argparse
 import sys

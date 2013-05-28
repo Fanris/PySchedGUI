@@ -11,7 +11,7 @@ from JobTable import JobTable
 from WorkstationTable import WSTable
 from AddJobGUI import AddJobDialog
 
-from PySchedUI.DataStructures import JobState
+from PySchedGUI.PySchedUI.DataStructures import JobState
 
 
 class MainWidget(QtGui.QWidget):    
