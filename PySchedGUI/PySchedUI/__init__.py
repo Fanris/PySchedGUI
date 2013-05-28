@@ -64,9 +64,9 @@ class PySchedUI(object):
         FileUtils.createFile("~/.pyschedGUI", rsa)
 
     def loadRSA(self):
-        rsa = FileUtils.readFile("~/pyschedGUI")
+        rsa = FileUtils.readFile("~/.pyschedGUI")
         if rsa and len(rsa) > 0:
-            return FileUtils.readFile("~/.pyschedGUI")[0]
+            return rsa[0]
         else:
             return None
 
