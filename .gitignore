@@ -40,4 +40,4 @@ nosetests.xml
 build/*
 dist/*
 *egg-info*
-
+QT4Design/*
