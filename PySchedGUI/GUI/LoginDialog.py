@@ -34,6 +34,7 @@ class LoginDialog(QtGui.QDialog):
         self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.label)
 
         self.userIdEdit = QtGui.QLineEdit(self.formLayoutWidget)
+        self.userIdEdit.setFocus()
         self.formLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.userIdEdit)
 
         self.label_2 = QtGui.QLabel(self.formLayoutWidget)

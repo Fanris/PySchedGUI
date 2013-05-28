@@ -46,6 +46,8 @@ class GUI(QtGui.QMainWindow):
             if self.showLoginDialog():
                 self.openConnection()
             else:
+                self.statusBar().showMessage("Connection failed!")
+                self.mainWidget.setDisabled(True)
                 self.exit()
         else:
             self.openConnection()
