@@ -10,7 +10,7 @@
 from PyQt4 import QtCore, QtGui
 
 class LoginDialog(QtGui.QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, rsa=None):
         QtGui.QDialog.__init__(self, parent)
 
         self.setWindowModality(QtCore.Qt.ApplicationModal)
@@ -41,19 +41,20 @@ class LoginDialog(QtGui.QDialog):
         self.formLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.label_2)
 
         self.rsaEdit = QtGui.QLineEdit(self.formLayoutWidget)
+        if rsa:
+            self.rsaEdit.setText(rsa)
         self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.rsaEdit)
 
         self.saveRSA = QtGui.QCheckBox(self.formLayoutWidget)
         self.saveRSA.setText("Save RSA-Key")
+        if rsa:
+            self.saveRSA.setChecked(True)
 
         self.formLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.saveRSA)
-        self.FileDialogButton = QtGui.QPushButton(self)
-        self.FileDialogButton.setGeometry(QtCore.QRect(360, 97, 28, 22))
-        self.FileDialogButton.setText("...")
 
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.accept)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.reject)
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def getInfos(self):        
-        return str(self.userIdEdit.text()), str(self.rsaEdit.text())
+        return str(self.userIdEdit.text()), str(self.rsaEdit.text()), self.saveRSA.isChecked()

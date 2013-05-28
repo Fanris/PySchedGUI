@@ -10,6 +10,7 @@ from Common import pack, deleteFile
 from UIDict import UIDict
 
 import TemplateParser
+import FileUtils
 
 import os
 import logging
@@ -58,6 +59,16 @@ class PySchedUI(object):
         self.logger.info("Closing connection...")
         if self.network:
             self.network.closeConnection()            
+
+    def saveRSA(self, rsa):
+        FileUtils.createFile("~/.pyschedGUI", rsa)
+
+    def loadRSA(self):
+        rsa = FileUtils.readFile("~/pyschedGUI")
+        if rsa and len(rsa) > 0:
+            return FileUtils.readFile("~/.pyschedGUI")[0]
+        else:
+            return None
 
     def initializeLogger(self, args):
         '''

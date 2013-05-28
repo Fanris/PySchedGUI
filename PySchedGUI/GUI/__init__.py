@@ -70,12 +70,15 @@ class GUI(QtGui.QMainWindow):
         self.show()
 
     def showLoginDialog(self):
-        login = LoginDialog(self)
+        rsa = self.pySchedUI.loadRSA()
+        login = LoginDialog(self, rsa)
         if login.exec_():
             try:
-                user, rsa = login.getInfos()
+                user, rsa, save = login.getInfos()
                 self.pySchedUI.userId = user
                 self.pySchedUI.rsaKey = rsa
+                if save:
+                    self.pySchedUI.saveRSA(rsa)
                 return True
             except:
                 self.pySchedUI.logger.info("Fehler!!!")
