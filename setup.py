@@ -15,5 +15,5 @@ setup(name='PySchedGUI',
             'PySchedGUI.PySchedUI',            
             'PySchedGUI.PySchedUI.Network'],
       install_requires=['paramiko',],
-      scripts=['PySchedGUI/PySchedGUI.sh'],
+      scripts=['PySchedGUI.sh'],
 )
