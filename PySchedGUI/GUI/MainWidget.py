@@ -74,6 +74,7 @@ class MainWidget(QtGui.QWidget):
     def downloadResults(self):
         pathToSave = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory"))
 
+        self.parent().pySchedUI.logger.debug("Selected folder: {}".format(pathToSave))
         if not pathToSave:
             return
 
@@ -85,9 +86,10 @@ class MainWidget(QtGui.QWidget):
         for row in rows:
             jobId = str(self.jobTable.item(row, 1).text())
             jobState = str(self.jobTable.item(row, 3).text())
-            if jobState in JobState.endStates:
+            if JobState.lookup(jobState) in JobState.endStates:
                 selectedJobs.append(jobId)
 
+        self.parent().pySchedUI.logger.debug("Selected jobs: {}".format(selectedJobs))
         self.ui.getResultsByJobId(selectedJobs, pathToSave)        
         self.updateTables()
 

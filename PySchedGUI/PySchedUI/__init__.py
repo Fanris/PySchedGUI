@@ -31,6 +31,7 @@ class PySchedUI(object):
         self.rsaKey = args.key or None
         self.lastError = None
         self.network = None
+        self.isAdmin = False
 
         if cmd:
             self.logger.debug("Command = {}".format(cmd))
@@ -48,7 +49,7 @@ class PySchedUI(object):
     def openConnection(self):
         self.network = Network(self, self.debug, keyFile=self.rsaKey)
         if self.network.openConnection():
-            userAuth, self.admin = self._checkUser(self.userId)
+            userAuth, self.isAdmin = self._checkUser(self.userId)
             if not userAuth:
                 self.lastError = "Unable to log in with this User. Please contact your system administrator."
                 self.logger.error(self.lastError)
@@ -176,7 +177,7 @@ class PySchedUI(object):
         param = {
             "userId": self.userId,
             "showAll": archived,
-            "showAllUser": adminMode and self.admin
+            "showAllUser": adminMode and self.isAdmin
         }
         return self._getJobs(param)
 
@@ -209,7 +210,7 @@ class PySchedUI(object):
         for jobId in jobIdList:
             param = {
                 "userId":   self.userId,
-                "jobId":    self.jobId,
+                "jobId":    jobId,
             }
             self._abortJob(param)
 
@@ -253,13 +254,14 @@ class PySchedUI(object):
     def _resumeJob(self, uiDict):
         self.network.sendCommand("resumeJob", waitForResponse=False, **uiDict)        
 
-    def getResults(self, jobIdList, path):
+    def getResultsByJobId(self, jobIdList, path):
         for jobId in jobIdList:
             param = {
                 "userId"    : self.userId,
                 "jobId"     : jobId,
                 "path"      : path,
             }
+            self.logger.info("Get Results of {}".format(jobId))
             self._getResults(param)
 
     def _getResults(self, uiDict):

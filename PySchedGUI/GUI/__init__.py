@@ -35,12 +35,21 @@ class GUI(QtGui.QMainWindow):
         act = fileMenu.addAction("Exit")        
         QtCore.QObject.connect(act, QtCore.SIGNAL("triggered()"), self.exit)
 
-        toolbar = self.addToolBar("New Job")
-        act = toolbar.addAction(QtGui.QIcon(":/images/newJob.png"), 'New Job')
+        connectionTb = self.addToolBar("Connection Toolbar" )
+        self.connectAct = connectionTb.addAction(QtGui.QIcon(":/images/connect.png"), 'Connect to Server')
+        QtCore.QObject.connect(self.connectAct, QtCore.SIGNAL("triggered()"), self.connectBtn)
+
+        self.disconnectAct = connectionTb.addAction(QtGui.QIcon(":/images/disconnect.png"), 'Disconnect from Server')
+        QtCore.QObject.connect(self.disconnectAct, QtCore.SIGNAL("triggered()"), self.closeConnection)
+
+        jobTb = self.addToolBar("Job Toolbar")
+        act = jobTb.addAction(QtGui.QIcon(":/images/newJob.png"), 'New Job')
         QtCore.QObject.connect(act, QtCore.SIGNAL("triggered()"), self.newJob)
 
-        act = toolbar.addAction(QtGui.QIcon(":/images/openJob.png"), 'Open Job')
+        act = jobTb.addAction(QtGui.QIcon(":/images/openJob.png"), 'Open Job')
         QtCore.QObject.connect(act, QtCore.SIGNAL("triggered()"), self.openJob)
+
+        self.adminToolBar = None
 
         if not self.pySchedUI.userId or not self.pySchedUI.rsaKey:
             if self.showLoginDialog():
@@ -50,17 +59,34 @@ class GUI(QtGui.QMainWindow):
                 self.mainWidget.setDisabled(True)
                 self.exit()
         else:
-            self.openConnection()
-
-        if self.isConnected:
-            self.mainWidget.updateTables()
+            self.openConnection()        
 
     def openConnection(self):
         if self.pySchedUI.openConnection():
             self.statusBar().showMessage('Connected')
             self.isConnected = True
+            self.connectAct.setEnabled(False)
+            self.disconnectAct.setEnabled(True)
+            self.mainWidget.setEnabled(True)
+            if self.pySchedUI.isAdmin:
+                self.showAdminToolBar()
+                
+            self.mainWidget.updateTables()
         else:
             self.statusBar().showMessage("Connection failed!")
+            self.isConnected = False
+            self.connectAct.setEnabled(True)
+            self.disconnectAct.setEnabled(False)
+            if self.adminToolBar:
+                self.removeToolbar(self.adminToolBar)
+
+    def closeConnection(self):
+        self.pySchedUI.closeConnection()   
+        self.isConnected = False
+        self.connectAct.setEnabled(True)
+        self.disconnectAct.setEnabled(False)      
+        self.mainWidget.setEnabled(False)
+        self.statusBar().showMessage("Disconnected by User")
 
     def center(self):
         screen = QtGui.QDesktopWidget().screenGeometry()
@@ -70,6 +96,18 @@ class GUI(QtGui.QMainWindow):
     def showGUI(self):
         self.center()
         self.show()
+
+    def showAdminToolBar(self):
+        self.adminModeCheckBox = QtGui.QCheckBox("Admin Mode")
+        QtCore.QObject.connect(self.adminModeCheckBox, QtCore.SIGNAL("stateChanged(int)"), self.changeAdminMode)
+
+        self.adminToolBar = QtGui.QToolBar("Admin Toolbar")
+        self.addToolBar(self.adminToolBar)
+        self.adminWidget = self.adminToolBar.addWidget(self.adminModeCheckBox)
+
+    def connectBtn(self):
+        self.showLoginDialog()
+        self.openConnection()
 
     def showLoginDialog(self):
         rsa = self.pySchedUI.loadRSA()
@@ -93,6 +131,12 @@ class GUI(QtGui.QMainWindow):
         templatePath = QtGui.QFileDialog.getOpenFileName(self, "Select a Template file")
         if templatePath:
             self.mainWidget.showAddJobDialog(templatePath=templatePath)
+
+    def changeAdminMode(self):
+        if self.adminModeCheckBox:
+            self.adminMode = self.adminModeCheckBox.isChecked()
+
+        self.mainWidget.updateTables()
 
     def exit(self):
         self.pySchedUI.closeConnection()
