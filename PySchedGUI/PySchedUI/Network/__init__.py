@@ -20,7 +20,7 @@ class Network(object):
     '''
     @summary: PySchedUI Network class
     '''
-    def __init__(self, pySchedUI, debug=False, keyFile=None, multicast="228.0.0.1"):
+    def __init__(self, pySchedUI, debug=False, keyFile=None, multicast="228.0.0.5"):
         self.logger = logging.getLogger("PySchedUI")
         self.pySchedUI = pySchedUI
         self.connection = None
