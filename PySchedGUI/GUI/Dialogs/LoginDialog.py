@@ -23,7 +23,7 @@ class LoginDialog(QtGui.QDialog):
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
 
         self.formLayoutWidget = QtGui.QWidget(self)
-        self.formLayoutWidget.setGeometry(QtCore.QRect(9, 9, 341, 151))
+        self.formLayoutWidget.setGeometry(QtCore.QRect(10, 10, 340, 150))
 
         self.formLayout = QtGui.QFormLayout(self.formLayoutWidget)
         self.formLayout.setRowWrapPolicy(QtGui.QFormLayout.WrapAllRows)
@@ -46,6 +46,10 @@ class LoginDialog(QtGui.QDialog):
             self.rsaEdit.setText(rsa)
         self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.rsaEdit)
 
+        self.openFileBtn = QtGui.QPushButton("...", parent=self)
+        self.openFileBtn.setGeometry(QtCore.QRect(360, 78, 24, 21))
+        QtCore.QObject.connect(self.openFileBtn, QtCore.SIGNAL("clicked()"), self.openFileDialog)
+
         self.saveRSA = QtGui.QCheckBox(self.formLayoutWidget)
         self.saveRSA.setText("Save RSA-Key")
         if rsa:
@@ -59,3 +63,6 @@ class LoginDialog(QtGui.QDialog):
 
     def getInfos(self):        
         return str(self.userIdEdit.text()), str(self.rsaEdit.text()), self.saveRSA.isChecked()
+
+    def openFileDialog(self):
+        self.rsaEdit.setText(QtGui.QFileDialog.getOpenFileName(self, "Select a RSA-Keyfile"))

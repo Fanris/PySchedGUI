@@ -25,6 +25,7 @@ def main():
     parser.add_argument("-k", '--key', help="The private key file for the ssh tunnel.")
     parser.add_argument("-q", '--quiet', action='store_true', help="Be quiet")
     parser.add_argument('-u', '--user', help="The username to use for this session")
+    parser.add_argument('-m', '--multicast', help="A Multicast group on which the GUI should listen for a server")
     parser.set_defaults(func=gui)  
 
     subparser = parser.add_subparsers(help='commands')

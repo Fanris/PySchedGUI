@@ -20,7 +20,7 @@ class Network(object):
     '''
     @summary: PySchedUI Network class
     '''
-    def __init__(self, pySchedUI, debug=False, keyFile=None):
+    def __init__(self, pySchedUI, debug=False, keyFile=None, multicast="228.0.0.1"):
         self.logger = logging.getLogger("PySchedUI")
         self.pySchedUI = pySchedUI
         self.connection = None
@@ -28,6 +28,7 @@ class Network(object):
         self.debug = debug
         self.keyFile = keyFile
         self.sshTunnel = None
+        self.multicast = multicast
 
     def sendCommand(self, command, waitForResponse=True, 
             dryRun=False, **kwargs):
@@ -100,8 +101,7 @@ class Network(object):
                 #self.logger.debug("Received Data: {}".format(self.receivedData))
 
 
-    def openConnection(self, timeout=None):
-        multiGroup = "228.0.0.5"
+    def openConnection(self, timeout=None):        
         udpPort = 50000
 
         # Join multicast group
@@ -112,12 +112,12 @@ class Network(object):
         sock.bind(('', udpPort))
         sock.settimeout(timeout)
 
-        group = socket.inet_aton(multiGroup)
+        group = socket.inet_aton(self.multicast)
         mreq = struct.pack('4sL', group, socket.INADDR_ANY)
         sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
         self.logger.info("Searching for a PySchedServer...")
-        sock.sendto('{"nCommand": "ping"}', (multiGroup, udpPort))
+        sock.sendto('{"nCommand": "ping"}', (self.multicast, udpPort))
 
         msg = ""
         while True:

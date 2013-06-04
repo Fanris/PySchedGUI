@@ -6,8 +6,9 @@ Created on 2013-05-27 13:13
 '''
 from PyQt4 import QtGui, QtCore
 
-from MainWidget import MainWidget
-from LoginDialog import LoginDialog
+from Widgets.MainWidget import MainWidget
+from Dialogs.LoginDialog import LoginDialog
+from Dialogs.AdminDialog import AdminDialog
 
 import Icons
 
@@ -57,6 +58,7 @@ class GUI(QtGui.QMainWindow):
             else:
                 self.statusBar().showMessage("Connection failed!")
                 self.mainWidget.setDisabled(True)
+                self.disconnectAct.setEnabled(False)
                 self.exit()
         else:
             self.openConnection()        
@@ -87,6 +89,8 @@ class GUI(QtGui.QMainWindow):
         self.disconnectAct.setEnabled(False)      
         self.mainWidget.setEnabled(False)
         self.statusBar().showMessage("Disconnected by User")
+        if self.adminToolBar:
+            self.removeToolbar(self.adminToolBar)
 
     def center(self):
         screen = QtGui.QDesktopWidget().screenGeometry()
@@ -103,11 +107,18 @@ class GUI(QtGui.QMainWindow):
 
         self.adminToolBar = QtGui.QToolBar("Admin Toolbar")
         self.addToolBar(self.adminToolBar)
+        act = self.adminToolBar.addAction(QtGui.QIcon(":images/adminMode.png"), "Admin Menu")
+        QtCore.QObject.connect(act, QtCore.SIGNAL("triggered()"), self.showAdminMenu)
         self.adminWidget = self.adminToolBar.addWidget(self.adminModeCheckBox)
 
     def connectBtn(self):
         self.showLoginDialog()
         self.openConnection()
+
+    def showAdminMenu(self):
+        adminDialog = AdminDialog(self.pySchedUI, parent=self)
+        if adminDialog.exec_():
+            pass
 
     def showLoginDialog(self):
         rsa = self.pySchedUI.loadRSA()

@@ -1,6 +1,6 @@
 from PyQt4 import QtCore, QtGui
 
-import Icons
+from PySchedGUI.GUI import Icons
 
 class JobTable(QtGui.QTableWidget):
     def __init__(self, parent=None):
@@ -45,10 +45,11 @@ class JobTable(QtGui.QTableWidget):
             event.ignore()
 
     def setHeaders(self):
-        self.setColumnCount(8)
+        self.setColumnCount(9)
         self.setHorizontalHeaderLabels([
             "",
             "ID", 
+            "User",
             "Name",
             "Status",
             "Added",
@@ -77,12 +78,13 @@ class JobTable(QtGui.QTableWidget):
 
             self.setItem(row, 0, stateIdItem)
             self.setItem(row, 1, QtGui.QTableWidgetItem(str(job.get("jobId", None))))
-            self.setItem(row, 2, QtGui.QTableWidgetItem(str(job.get("jobName", None))))
-            self.setItem(row, 3, QtGui.QTableWidgetItem(str(job.get("stateId", None))))
-            self.setItem(row, 4, QtGui.QTableWidgetItem(str(job.get("added", None))))
-            self.setItem(row, 5, QtGui.QTableWidgetItem(str(job.get("started", None))))
-            self.setItem(row, 6, QtGui.QTableWidgetItem(str(job.get("finished", None))))
-            self.setItem(row, 7, QtGui.QTableWidgetItem(str(job.get("workstation", None))))
+            self.setItem(row, 2, QtGui.QTableWidgetItem(str(job.get("userId", None))))
+            self.setItem(row, 3, QtGui.QTableWidgetItem(str(job.get("jobName", None))))
+            self.setItem(row, 4, QtGui.QTableWidgetItem(str(job.get("stateId", None))))
+            self.setItem(row, 5, QtGui.QTableWidgetItem(str(job.get("added", None))))
+            self.setItem(row, 6, QtGui.QTableWidgetItem(str(job.get("started", None))))
+            self.setItem(row, 7, QtGui.QTableWidgetItem(str(job.get("finished", None))))
+            self.setItem(row, 8, QtGui.QTableWidgetItem(str(job.get("workstation", None))))
             row += 1 
 
     def contextMenuEvent(self, event):

@@ -9,7 +9,7 @@ from PyQt4 import QtGui, QtCore
 
 from JobTable import JobTable
 from WorkstationTable import WSTable
-from AddJobGUI import AddJobDialog
+from PySchedGUI.GUI.Dialogs.AddJobDialog import AddJobDialog
 
 from PySchedGUI.PySchedUI.DataStructures import JobState
 

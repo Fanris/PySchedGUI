@@ -32,6 +32,7 @@ class PySchedUI(object):
         self.lastError = None
         self.network = None
         self.isAdmin = False
+        self.multicastGroup = args.multicast
 
         if cmd:
             self.logger.debug("Command = {}".format(cmd))
@@ -155,13 +156,13 @@ class PySchedUI(object):
         returnValue = self.network.sendCommand("checkUser", waitForResponse=True, userId=userId )
         return returnValue.get("result", False), returnValue.get("admin", False)
 
-    def createUser(self, email, firstName="", lastName="", isAdmin=False):
+    def createUser(self, user):
         param = {
             "userId": self.userId,
-            "email": email,
-            "firstName": firstName,
-            "lastName": lastName,
-            "admin": isAdmin
+            "email": user.email,
+            "firstName": user.firstName,
+            "lastName": user.lastName,
+            "admin": user.admin
         }
         return self._createUser(param)
 
@@ -172,6 +173,28 @@ class PySchedUI(object):
             return False
         else:
             return True
+
+    def getUsers(self):
+        param = {
+            "userId": self.userId
+        }
+        return self._getUsers(param)
+
+    def _getUsers(self, uiDict):
+        returnValue = self.network.sendCommand("getUsers", **uiDict)
+        if returnValue.get("result", False):
+            return returnValue.get("users", None)
+
+    def deleteUser(self, email):
+        param = {
+            "userId": self.userId,
+            "email": email
+        }
+        return self._deleteUser(param)
+
+    def _deleteUser(self, uiDict):
+        returnValue = self.network.sendCommand("deleteUser", **uiDict)
+        return returnValue.get("result", False)
 
     def getJobs(self, archived=False, adminMode=False):
         param = {
@@ -217,9 +240,41 @@ class PySchedUI(object):
     def _abortJob(self, uiDict):
         returnValue = self.network.sendCommand("killJob", **uiDict)
         if returnValue.get("result", False):
-            return False
+            return True
 
-        return True
+        return False
+
+    def addProgram(self, program):
+        param = {
+            "userId": self.userId,
+            "programName": program.programName,
+            "programPath": program.programPath,
+            "programExec": program.programExec,
+            "programVersion": program.programVersion,
+        }
+        return self._addProgram(param)
+
+    def _addProgram(self, uiDict):
+        returnValue = self.network.sendCommand("addProgram", **uiDict)
+        return returnValue.get("result", False)
+
+    def getPrograms(self):
+        return self._getPrograms()
+
+    def _getPrograms(self):
+        returnValue = self.network.sendCommand("getPrograms")
+        return returnValue.get("programs", None)
+
+    def deleteProgram(self, programName):
+        param = {
+            "userId": self.userId,
+            "programName": programName
+        }
+        return self._deleteProgram(param)
+
+    def _deleteProgram(self, uiDict):
+        returnValue = self.network.sendCommand("deleteProgram", **uiDict)
+        return returnValue.get("result", False)
 
     def checkJobs(self):
         self.network.sendCommand("checkJobs", waitForResponse=False)
