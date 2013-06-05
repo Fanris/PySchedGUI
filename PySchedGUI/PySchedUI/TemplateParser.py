@@ -86,7 +86,7 @@ def parse(line, section, template):
             template["reqPrograms"] = programs
             return True
 
-        programs.append(line)
+        programs.append({"programName": line, "programExec": line})
         return True
 
     if section.upper() == "EXECUTION":

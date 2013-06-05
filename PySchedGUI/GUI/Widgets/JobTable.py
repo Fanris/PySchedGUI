@@ -85,7 +85,9 @@ class JobTable(QtGui.QTableWidget):
             self.setItem(row, 6, QtGui.QTableWidgetItem(str(job.get("started", None))))
             self.setItem(row, 7, QtGui.QTableWidgetItem(str(job.get("finished", None))))
             self.setItem(row, 8, QtGui.QTableWidgetItem(str(job.get("workstation", None))))
-            row += 1 
+            row += 1
+
+        self.horizontalHeader().resizeSections(QtGui.QHeaderView.ResizeToContents)
 
     def contextMenuEvent(self, event):
         menu = QtGui.QMenu(self)
@@ -109,3 +111,10 @@ class JobTable(QtGui.QTableWidget):
             self.parent().resumeJob()
         elif action == abortJobAction:
             self.parent().abortJob()
+
+    def getSelectedRows(self):
+        rows=[]
+        for idx in self.selectedIndexes():
+            if not idx.row() in rows:
+                rows.append(idx.row())  
+        return rows

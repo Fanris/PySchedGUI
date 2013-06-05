@@ -51,3 +51,9 @@ class ProgramTable(QtGui.QTableWidget):
         if action == deleteJobAction:
             self.parent().deleteJob()
 
+    def getSelectedRows(self):
+        rows=[]
+        for idx in self.selectedIndexes():
+            if not idx.row() in rows:
+                rows.append(idx.row())  
+        return rows

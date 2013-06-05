@@ -41,3 +41,10 @@ class UserTable(QtGui.QTableWidget):
             row += 1 
 
         self.horizontalHeader().resizeSections(QtGui.QHeaderView.ResizeToContents)
+        
+    def getSelectedRows(self):
+        rows=[]
+        for idx in self.selectedIndexes():
+            if not idx.row() in rows:
+                rows.append(idx.row())  
+        return rows

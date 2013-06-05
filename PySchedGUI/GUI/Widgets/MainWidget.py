@@ -61,14 +61,12 @@ class MainWidget(QtGui.QWidget):
     def updateTables(self):
         jobs = self.ui.getJobs(archived=False, adminMode=self.parent().adminMode)
         self.jobTable.updateTable(jobs)
-        self.jobTable.horizontalHeader().resizeSections(QtGui.QHeaderView.ResizeToContents)
 
         ws, server = self.ui.getWorkstations()
         self.wsTable.updateTable(ws, server)
-        self.wsTable.horizontalHeader().resizeSections(QtGui.QHeaderView.ResizeToContents)
 
     def addJobs(self, paths):
-        self.ui.addJobs(paths)
+        self.ui.addJobConfigFiles(paths)
         self.updateTables()
 
     def downloadResults(self):
@@ -77,26 +75,24 @@ class MainWidget(QtGui.QWidget):
         self.parent().pySchedUI.logger.debug("Selected folder: {}".format(pathToSave))
         if not pathToSave:
             return
-
-        rows=[]
-        for idx in self.jobTable.selectedIndexes():
-            rows.append(idx.row())         
+        rows = self.jobTable.getSelectedRows()         
 
         selectedJobs = []
         for row in rows:
             jobId = str(self.jobTable.item(row, 1).text())
-            jobState = str(self.jobTable.item(row, 3).text())
-            if JobState.lookup(jobState) in JobState.endStates:
+            jobState = str(self.jobTable.item(row, 4).text())
+            if JobState.lookup(jobState) >= JobState.lookup("DONE") and \
+                JobState.lookup(jobState) <= JobState.lookup("SCHEDULER_ERROR"):
                 selectedJobs.append(jobId)
+            else:
+                self.ui.logger.debug("JobState {} not valid for download".format(jobState))
 
         self.parent().pySchedUI.logger.debug("Selected jobs: {}".format(selectedJobs))
         self.ui.getResultsByJobId(selectedJobs, pathToSave)        
         self.updateTables()
 
     def deleteJob(self):
-        rows=[]
-        for idx in self.jobTable.selectedIndexes():
-            rows.append(idx.row())         
+        rows = self.jobTable.getSelectedRows()         
 
         selectedJobs = []
         for row in rows:
@@ -112,9 +108,7 @@ class MainWidget(QtGui.QWidget):
             self.updateTables()
 
     def pauseJob(self):
-        rows=[]
-        for idx in self.jobTable.selectedIndexes():
-            rows.append(idx.row())         
+        rows = self.jobTable.getSelectedRows()      
 
         selectedJobs = []
         for row in rows:
@@ -127,9 +121,7 @@ class MainWidget(QtGui.QWidget):
         self.updateTables() 
 
     def resumeJob(self):
-        rows=[]
-        for idx in self.jobTable.selectedIndexes():
-            rows.append(idx.row())         
+        rows = self.jobTable.getSelectedRows()
 
         selectedJobs = []
         for row in rows:
@@ -142,9 +134,7 @@ class MainWidget(QtGui.QWidget):
         self.updateTables()
     
     def abortJob(self):
-        rows=[]
-        for idx in self.jobTable.selectedIndexes():
-            rows.append(idx.row())         
+        rows = self.jobTable.getSelectedRows()         
 
         selectedJobs = []
         for row in rows:
@@ -157,10 +147,9 @@ class MainWidget(QtGui.QWidget):
     def showAddJobDialog(self, templatePath=None):
         addJobDialog = AddJobDialog(self, templatePath)
         if addJobDialog.exec_():
-            try:
                 info = addJobDialog.createConfigFile()
-                self.ui.addJob(info.getInfos())
-            except:
-                self.ui.logger.error("Could not create job config")
+                self.ui.addJob(info)
+
+        self.updateTables()
 
             

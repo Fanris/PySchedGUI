@@ -48,7 +48,7 @@ class PySchedUI(object):
                 self.closeConnection()
 
     def openConnection(self):
-        self.network = Network(self, self.debug, keyFile=self.rsaKey)
+        self.network = Network(self, self.debug, keyFile=self.rsaKey, multicast=self.multicastGroup)
         if self.network.openConnection():
             userAuth, self.isAdmin = self._checkUser(self.userId)
             if not userAuth:
@@ -103,11 +103,14 @@ class PySchedUI(object):
 
 # =================== COMMANDS ====================================
 
-    def addJobs(self, listOfJobConfigs):
+    def addJobConfigFiles(self, listOfJobConfigs):
         for job in listOfJobConfigs:
             uiDict = {}
             uiDict["template"] = job
             self._addJob(uiDict)
+
+    def addJob(self, jobInfo):
+        self._addJob(jobInfo)
 
     def _addJob(self, uiDict):
         '''
@@ -135,22 +138,19 @@ class PySchedUI(object):
             if not jobId:
                 return False
 
-            path = pack("{}.tar".format(jobId), *paths)
-            self.logger.info("Sending Files... ")
-            if path:                
-                self.logger.debug("Sending File... {} ".format(path))
-                returnValue = self.network.sendFile(path)
-                deleteFile(path)
+            returnValue = self.network.sendCommand("requestFileUpload", jobId=jobId)
+            remotePath = returnValue.get("path", None)
 
-                if returnValue.get("result", False):
+            if remotePath:
+                path = pack("{}.tar".format(jobId), *paths)
+                self.logger.info("Sending Files... ")
+                if path:                
+                    self.network.sendFileSFTP(path, remotePath, callback=None)                    
+                    deleteFile(path)
+                    self.network.sendCommand("fileUploadCompleted", waitForResponse=True, path=remotePath, jobId=jobId)
                     return True
-                    self.logger.info("Done")
-                else:
-                    return False
-
-            return True
-        else:
-            return False
+            
+        return False
 
     def _checkUser(self, userId):
         returnValue = self.network.sendCommand("checkUser", waitForResponse=True, userId=userId )
@@ -317,15 +317,20 @@ class PySchedUI(object):
                 "path"      : path,
             }
             self.logger.info("Get Results of {}".format(jobId))
-            self._getResults(param)
+            self._getResultsSFTP(param)
 
-    def _getResults(self, uiDict):
-        returnValue = self.network.sendCommand("getResults", **uiDict)
-        
-        return self.network.getFile(
-            os.path.join(
-                uiDict.get("path", ""), 
-                returnValue.get("filename", "results.tar")))
+    def _getResultsSFTP(self, uiDict):
+        jobId = uiDict.get("jobId", None)
+        returnValue = self.network.sendCommand("requestFileDownload", **uiDict)
+        if returnValue.get("result", False):
+            localPath = uiDict.get("path", None)
+            remotePath = returnValue.get("path", None)
+            if remotePath and localPath:
+                filename = os.path.split(remotePath)[1]
+                localPath = os.path.join(localPath, filename)
+                self.network.getFileSFTP(localPath, remotePath, callback=None)
+                self.network.sendCommand("fileUploadCompleted", waitForResponse=False,
+                    path=remotePath, jobId=jobId)
 
     def deleteJobs(self, jobIdList):
         for jobId in jobIdList:
@@ -343,3 +348,8 @@ class PySchedUI(object):
 
     def shutdownServer(self, uiDict):
         self.network.sendCommand("shutdown", waitForResponse=True, **uiDict)
+
+    def fileDownloadCompleted(self, pathToFile, jobId):
+        self.network.sendCommand("fileDownloadCompleted", waitForResponse=False,
+            path=pathToFile, jobId=jobId)
+

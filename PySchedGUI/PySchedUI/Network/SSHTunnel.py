@@ -44,6 +44,29 @@ class SSHTunnel(object):
         self.serve = True
         self.isConnected = False
 
+    def getFile(self, localPath, remotePath, callback=None):
+        '''
+        @summary: Copies a File from the server
+        @param localPath: The localPath to store the file
+        @param remotePath: The remotePath, were the file is stored
+        @result: 
+        '''
+        sftp = paramiko.SFTPClient.from_transport(self.client.get_transport())
+        sftp.get(remotePath, localPath, callback)
+        sftp.close()
+
+    def sendFile(self, localPath, remotePath, callback=None):
+        '''
+        @summary: Uploads a file from the local machine to the server
+        @param localPath:   The local file path
+        @param remotePath:  The remote file path
+        @param callback:
+        @result: 
+        '''
+        sftp = paramiko.SFTPClient.from_transport(self.client.get_transport())
+        sftp.put(localPath, remotePath, callback) 
+
+
     def buildTunnel(self):
         '''
         @summary: Builds the SSH tunnel.
@@ -132,17 +155,13 @@ class Handler (SocketServer.BaseRequestHandler):
                                                    (self.chain_host,
                                                     self.chain_port),
                                                     self.request.getpeername())
-        except Exception, e:
-            #self.sshClient.logger.error("Incoming request to {}:{} failed: {}".\
-            #    format(self.chain_host, self.chain_port, repr(e)))
+        except Exception:
             return
 
         if chan is None:
-            #self.sshClient.logger.error("Incoming request to {}:{} was rejected by the SSH server.".\
-            #    format(self.chain_host, self.chain_port))
             return
 
-        while True:#self.sshClient.serve:
+        while True:
             r, w, x = select.select([self.request, chan], [], [])
             if self.request in r:
                 data = self.request.recv(1024)
@@ -154,5 +173,4 @@ class Handler (SocketServer.BaseRequestHandler):
 
         chan.close()
         self.request.close()
-        #self.sshClient.isConnected = False
-        #self.sshClient.logger.info("Tunnel closed.")
+

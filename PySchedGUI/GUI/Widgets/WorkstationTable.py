@@ -52,3 +52,12 @@ class WSTable(QtGui.QTableWidget):
             self.setItem(row, 7, QtGui.QTableWidgetItem(str(workstation.get("programs", "N/A"))))
             self.setItem(row, 8, QtGui.QTableWidgetItem(str(workstation.get("machine", "N/A"))))
             row += 1    
+
+        self.horizontalHeader().resizeSections(QtGui.QHeaderView.ResizeToContents)
+
+    def getSelectedRows(self):
+        rows=[]
+        for idx in self.selectedIndexes():
+            if not idx.row() in rows:
+                rows.append(idx.row())  
+        return rows

@@ -16,11 +16,13 @@ import base64
 
 import logging
 
+DEFAULT_MULTICAST="228.0.0.5"
+
 class Network(object):
     '''
     @summary: PySchedUI Network class
     '''
-    def __init__(self, pySchedUI, debug=False, keyFile=None, multicast="228.0.0.5"):
+    def __init__(self, pySchedUI, debug=False, keyFile=None, multicast=None):
         self.logger = logging.getLogger("PySchedUI")
         self.pySchedUI = pySchedUI
         self.connection = None
@@ -64,6 +66,9 @@ class Network(object):
 
         return self.sendCommand("", waitForResponse=True, nCommand="fileOk")
 
+    def sendFileSFTP(self, localPath, remotePath, callback):
+        self.sshTunnel.sendFile(localPath, remotePath, callback)
+
     def getFile(self, path):
         '''
         @summary: Is called after a file is requested. This function receives and stores
@@ -79,6 +84,9 @@ class Network(object):
                 f.write(chunk)
                 returnValue = self.listen()
         return True
+
+    def getFileSFTP(self, remotePath, localPath, callback):
+        self.sshTunnel.getFile(remotePath, localPath, callback)
 
     def listen(self):
         while True:
@@ -101,8 +109,10 @@ class Network(object):
                 #self.logger.debug("Received Data: {}".format(self.receivedData))
 
 
-    def openConnection(self, timeout=None):        
+    def openConnection(self, timeout=None):                
         udpPort = 50000
+        multicast = self.multicast or DEFAULT_MULTICAST
+        self.logger.debug("connecting to multicast group: {}:{}".format(multicast, udpPort))
 
         # Join multicast group
 
@@ -112,12 +122,12 @@ class Network(object):
         sock.bind(('', udpPort))
         sock.settimeout(timeout)
 
-        group = socket.inet_aton(self.multicast)
+        group = socket.inet_aton(multicast)
         mreq = struct.pack('4sL', group, socket.INADDR_ANY)
         sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
         self.logger.info("Searching for a PySchedServer...")
-        sock.sendto('{"nCommand": "ping"}', (self.multicast, udpPort))
+        sock.sendto('{"nCommand": "ping"}', (multicast, udpPort))
 
         msg = ""
         while True:
