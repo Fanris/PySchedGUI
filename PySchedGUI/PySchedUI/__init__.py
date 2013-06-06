@@ -385,11 +385,12 @@ class PySchedUI(object):
     def shutdownAll(self):
         self.network.sendCommand("shutdownAll", waitForResponse=False, userId=self.userId)
 
-    def shutdownWs(self, workstationName):
-        self.network.sendCommand("shutdownWorkstation", 
-            waitForResponse=False, 
-            userId=self.userId,
-            workstationName=workstationName)        
+    def shutdownWs(self, listOfWorkstationNames):
+        for ws in listOfWorkstationNames:
+            self.network.sendCommand("shutdownWorkstation", 
+                waitForResponse=False, 
+                userId=self.userId,
+                workstationName=ws)
 
     def fileDownloadCompleted(self, pathToFile, jobId):
         self.network.sendCommand("fileDownloadCompleted", waitForResponse=False,

@@ -206,4 +206,4 @@ class MainWidget(QtGui.QWidget):
                 "Are you sure, you want to shutdown these workstations?\n{}\nAll currently running jobs are aborted!".format(workstations),
                 QtGui.QMessageBox.Ok | QtGui.QMessageBox.No,
                 QtGui.QMessageBox.No) == QtGui.QMessageBox.Ok:
-                self.ui.shutdownAll()            
+                self.ui.shutdownWs(workstations)            
