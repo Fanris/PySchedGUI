@@ -69,8 +69,8 @@ class MainWidget(QtGui.QWidget):
     def addJobs(self, paths):
         failed = []
         for path in paths:
-            if not self.ui.addJobConfigFiles(path):
-                failed.append[path]               
+            if not self.ui.addJobConfigFile(path):
+                failed.append(path)
         
         if len(failed) > 0:
             QtGui.QMessageBox.warning(self,
@@ -177,10 +177,11 @@ class MainWidget(QtGui.QWidget):
     def updateJob(self):
         paths = []
         for path in QtGui.QFileDialog.getOpenFileNames(self, "Select Files which will be added to the job"):
-            path.append(str(path))
+            paths.append(str(path))
 
         rows = self.jobTable.getSelectedRows()
         if len(paths) > 0 and len(rows) == 1:
+            self.ui.logger.debug("Updating Job...")
             if not self.ui.updateJobData(str(self.jobTable.item(rows[0], 1).text()), paths):
                 QtGui.QMessageBox.warning(self,
                     "Failure",

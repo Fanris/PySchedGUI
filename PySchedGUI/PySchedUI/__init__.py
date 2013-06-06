@@ -106,7 +106,7 @@ class PySchedUI(object):
     def addJobConfigFile(self, configFile):
         uiDict = {}
         uiDict["template"] = configFile
-        self._addJob(uiDict)        
+        return self._addJob(uiDict)        
 
     def addJob(self, jobInfo):
         return self._addJob(jobInfo)

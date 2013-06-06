@@ -72,7 +72,8 @@ class JobTable(QtGui.QTableWidget):
                     stateIdItem.setIcon(QtGui.QIcon(":/images/running.png"))
                 elif "DONE" in job.get("stateId", ""):
                     stateIdItem.setIcon(QtGui.QIcon(":/images/done.png"))
-                elif "ERROR" in job.get("stateId", ""):
+                elif "ERROR" in job.get("stateId", "") or \
+                    "ABORTED" in job.get("stateId", ""):
                     stateIdItem.setIcon(QtGui.QIcon(":/images/error.png"))
                 else:
                     stateIdItem.setIcon(QtGui.QIcon(":/images/clock.png"))
