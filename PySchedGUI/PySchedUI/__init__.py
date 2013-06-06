@@ -220,11 +220,11 @@ class PySchedUI(object):
             "userId":   self.userId,
             "jobId":    jobId,
         }
-        self._getJobLog(param)
+        return self._getJobLog(param)
 
     def _getJobLog(self, uiDict):
         returnValue = self.network.sendCommand("getJobLog", waitForResponse=True, **uiDict)
-        return returnValue.get("log", None)
+        return returnValue.get("log", "")
 
     def getCompiler(self):
         return self.network.sendCommand("getCompiler").get("compiler", None)
@@ -329,7 +329,7 @@ class PySchedUI(object):
                 filename = os.path.split(remotePath)[1]
                 localPath = os.path.join(localPath, filename)
                 self.network.getFileSFTP(localPath, remotePath, callback=None)
-                self.network.sendCommand("fileUploadCompleted", waitForResponse=False,
+                self.network.sendCommand("fileDownloadCompleted", waitForResponse=True,
                     path=remotePath, jobId=jobId)
 
     def deleteJobs(self, jobIdList):

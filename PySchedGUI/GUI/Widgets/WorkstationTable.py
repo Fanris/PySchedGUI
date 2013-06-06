@@ -55,6 +55,47 @@ class WSTable(QtGui.QTableWidget):
 
         self.horizontalHeader().resizeSections(QtGui.QHeaderView.ResizeToContents)
 
+    def contextMenuEvent(self, event):
+        pass
+            # menu = QtGui.QMenu(self)
+
+            # singleSelectionActionsEnabled = True
+            # rows = self.getSelectedRows()
+            # if len(rows) > 1:
+            #     singleSelectionActionsEnabled = False
+
+            # showJobDetailsAction = menu.addAction("Show Job Details")
+            # showJobDetailsAction.setEnabled(singleSelectionActionsEnabled)
+            # menu.addSeparator()
+
+            # updateJobAction = menu.addAction("Update Job")    
+            # updateJobAction.setEnabled(singleSelectionActionsEnabled)
+
+            # pauseJobAction = menu.addAction("Pause Job(s)")
+            # resumeJobAction = menu.addAction("Resume Job(s)")
+            # abortJobAction = menu.addAction("Abort Job(s)")
+            # menu.addSeparator()
+            # downloadResultsAction = menu.addAction("Download results...")
+            # menu.addSeparator()
+            # deleteJobAction = menu.addAction("Delete Job(s)")
+
+
+            # action = menu.exec_(self.mapToGlobal(event.pos()))
+            # if action == downloadResultsAction:
+            #     self.parent().downloadResults()
+            # elif action == deleteJobAction:
+            #     self.parent().deleteJob()
+            # elif action == pauseJobAction:
+            #     self.parent().pauseJob()
+            # elif action == resumeJobAction:
+            #     self.parent().resumeJob()
+            # elif action == abortJobAction:
+            #     self.parent().abortJob()
+            # elif action == updateJobAction:
+            #     pass
+            # elif action == showJobDetailsAction:
+            #     self.parent().showJobDetails()
+
     def getSelectedRows(self):
         rows=[]
         for idx in self.selectedIndexes():

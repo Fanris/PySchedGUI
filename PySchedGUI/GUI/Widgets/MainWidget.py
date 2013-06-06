@@ -10,6 +10,7 @@ from PyQt4 import QtGui, QtCore
 from JobTable import JobTable
 from WorkstationTable import WSTable
 from PySchedGUI.GUI.Dialogs.AddJobDialog import AddJobDialog
+from PySchedGUI.GUI.Dialogs.JobInfoDialog import JobInfoDialog
 
 from PySchedGUI.PySchedUI.DataStructures import JobState
 
@@ -152,4 +153,10 @@ class MainWidget(QtGui.QWidget):
 
         self.updateTables()
 
-            
+    def showJobDetails(self):
+        rows = self.jobTable.getSelectedRows()
+        if len(rows) > 0:
+            jobId = str(self.jobTable.item(rows[0], 1).text())
+            jobLog = self.ui.getJobLog(jobId)
+            jobLogDialog = JobInfoDialog(jobLog)
+            jobLogDialog.exec_()

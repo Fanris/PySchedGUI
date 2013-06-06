@@ -82,11 +82,11 @@ def parse(line, section, template):
     if section.upper() == "PROGRAMS":
         programs = template.get("reqPrograms", [])
         if len(programs) == 0:
-            programs.append({"programName": line, "programExec": line})
+            programs.append(line)
             template["reqPrograms"] = programs
             return True
 
-        programs.append({"programName": line, "programExec": line})
+        programs.append(line)
         return True
 
     if section.upper() == "EXECUTION":
