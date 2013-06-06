@@ -54,7 +54,7 @@ def pack(outputPath, *args):
     for filename in args:
         if not os.path.exists(filename.strip("*")):
             print "Error on creating archive! File {} does not exist!".format(filename.strip("*"))
-            return None
+            return False
 
         if filename.endswith("*"):
             filename = filename.strip("*")

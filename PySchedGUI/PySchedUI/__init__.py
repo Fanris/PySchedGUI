@@ -103,14 +103,13 @@ class PySchedUI(object):
 
 # =================== COMMANDS ====================================
 
-    def addJobConfigFiles(self, listOfJobConfigs):
-        for job in listOfJobConfigs:
-            uiDict = {}
-            uiDict["template"] = job
-            self._addJob(uiDict)
+    def addJobConfigFile(self, configFile):
+        uiDict = {}
+        uiDict["template"] = configFile
+        self._addJob(uiDict)        
 
     def addJob(self, jobInfo):
-        self._addJob(jobInfo)
+        return self._addJob(jobInfo)
 
     def _addJob(self, uiDict):
         '''
@@ -142,13 +141,19 @@ class PySchedUI(object):
             remotePath = returnValue.get("path", None)
 
             if remotePath:
-                path = pack("{}.tar".format(jobId), *paths)
-                self.logger.info("Sending Files... ")
-                if path:                
-                    self.network.sendFileSFTP(path, remotePath, callback=None)                    
-                    deleteFile(path)
-                    self.network.sendCommand("fileUploadCompleted", waitForResponse=True, path=remotePath, jobId=jobId)
-                    return True
+                try:
+                    path = pack("{}.tar".format(jobId), *paths)
+                    if path:                
+                        self.network.sendFileSFTP(path, remotePath, callback=None)                    
+                        deleteFile(path)
+                        self.network.sendCommand("fileUploadCompleted", waitForResponse=True, path=remotePath, jobId=jobId)
+                        return True
+                    else:
+                        self.deleteJobs([jobId])
+                        return False
+                except:
+                    self.deleteJobs([jobId])
+                    #self.lastError = e
             
         return False
 
@@ -225,9 +230,6 @@ class PySchedUI(object):
     def _getJobLog(self, uiDict):
         returnValue = self.network.sendCommand("getJobLog", waitForResponse=True, **uiDict)
         return returnValue.get("log", "")
-
-    def getCompiler(self):
-        return self.network.sendCommand("getCompiler").get("compiler", None)
 
     def abortJobs(self, jobIdList):
         for jobId in jobIdList:
@@ -309,6 +311,37 @@ class PySchedUI(object):
     def _resumeJob(self, uiDict):
         self.network.sendCommand("resumeJob", waitForResponse=False, **uiDict)        
 
+    def updateJobData(self, jobId, fileList):
+        param = {
+            "jobId": jobId,
+            "paths": fileList,
+            "userId": self.userId
+        }
+        return self._updateJobData(param)
+
+    def _updateJobData(self, uiDict):
+        paths = uiDict.get("paths", [])
+        jobId = uiDict.get("jobId", None)
+        
+        path = pack("{}.tar".format(jobId), *paths)
+        if path:                
+            self.logger.debug("Sending File... {} ".format(path))
+            returnValue = self.network.sendCommand("requestFileUpload", jobId=jobId)
+            remotePath = returnValue.get("path", None)
+
+            if remotePath:
+                path = pack("{}.tar".format(jobId), *paths)
+                self.logger.info("Sending Files... ")
+                if path:                
+                    self.network.sendFileSFTP(path, remotePath, callback=None)                    
+                    deleteFile(path)
+                    self.network.sendCommand("fileUploadCompleted", waitForResponse=True, path=remotePath, jobId=jobId)
+                    return True
+        else:
+            return False
+
+        return False
+
     def getResultsByJobId(self, jobIdList, path):
         for jobId in jobIdList:
             param = {
@@ -348,6 +381,15 @@ class PySchedUI(object):
 
     def shutdownServer(self, uiDict):
         self.network.sendCommand("shutdown", waitForResponse=True, **uiDict)
+
+    def shutdownAll(self):
+        self.network.sendCommand("shutdownAll", waitForResponse=False, userId=self.userId)
+
+    def shutdownWs(self, workstationName):
+        self.network.sendCommand("shutdownWorkstation", 
+            waitForResponse=False, 
+            userId=self.userId,
+            workstationName=workstationName)        
 
     def fileDownloadCompleted(self, pathToFile, jobId):
         self.network.sendCommand("fileDownloadCompleted", waitForResponse=False,

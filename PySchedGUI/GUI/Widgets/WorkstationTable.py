@@ -56,45 +56,20 @@ class WSTable(QtGui.QTableWidget):
         self.horizontalHeader().resizeSections(QtGui.QHeaderView.ResizeToContents)
 
     def contextMenuEvent(self, event):
-        pass
-            # menu = QtGui.QMenu(self)
+        menu = QtGui.QMenu(self)
 
-            # singleSelectionActionsEnabled = True
-            # rows = self.getSelectedRows()
-            # if len(rows) > 1:
-            #     singleSelectionActionsEnabled = False
+        shutdownAllAction = menu.addAction("Shutdown all")
+        shutdownAllAction.setEnabled(self.parent().ui.isAdmin)
 
-            # showJobDetailsAction = menu.addAction("Show Job Details")
-            # showJobDetailsAction.setEnabled(singleSelectionActionsEnabled)
-            # menu.addSeparator()
-
-            # updateJobAction = menu.addAction("Update Job")    
-            # updateJobAction.setEnabled(singleSelectionActionsEnabled)
-
-            # pauseJobAction = menu.addAction("Pause Job(s)")
-            # resumeJobAction = menu.addAction("Resume Job(s)")
-            # abortJobAction = menu.addAction("Abort Job(s)")
-            # menu.addSeparator()
-            # downloadResultsAction = menu.addAction("Download results...")
-            # menu.addSeparator()
-            # deleteJobAction = menu.addAction("Delete Job(s)")
+        shutdownWSAction = menu.addAction("Shutdown Workstation(s)")    
+        shutdownWSAction.setEnabled(self.parent().ui.isAdmin)
 
 
-            # action = menu.exec_(self.mapToGlobal(event.pos()))
-            # if action == downloadResultsAction:
-            #     self.parent().downloadResults()
-            # elif action == deleteJobAction:
-            #     self.parent().deleteJob()
-            # elif action == pauseJobAction:
-            #     self.parent().pauseJob()
-            # elif action == resumeJobAction:
-            #     self.parent().resumeJob()
-            # elif action == abortJobAction:
-            #     self.parent().abortJob()
-            # elif action == updateJobAction:
-            #     pass
-            # elif action == showJobDetailsAction:
-            #     self.parent().showJobDetails()
+        action = menu.exec_(self.mapToGlobal(event.pos()))
+        if action == shutdownWSAction:
+            self.parent().shutdownWS()            
+        elif action == shutdownAllAction:
+            self.parent().shutdownAll()
 
     def getSelectedRows(self):
         rows=[]

@@ -129,7 +129,7 @@ class JobTable(QtGui.QTableWidget):
         elif action == abortJobAction:
             self.parent().abortJob()
         elif action == updateJobAction:
-            pass
+            self.parent().updateJob()
         elif action == showJobDetailsAction:
             self.parent().showJobDetails()
 

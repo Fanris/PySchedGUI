@@ -67,7 +67,16 @@ class MainWidget(QtGui.QWidget):
         self.wsTable.updateTable(ws, server)
 
     def addJobs(self, paths):
-        self.ui.addJobConfigFiles(paths)
+        failed = []
+        for path in paths:
+            if not self.ui.addJobConfigFiles(path):
+                failed.append[path]               
+        
+        if len(failed) > 0:
+            QtGui.QMessageBox.warning(self,
+                "Errors on submitting jobs:",
+                "The following jobs could not be uploaded:\n{}".format(failed),
+                QtGui.QMessageBox.Ok)
         self.updateTables()
 
     def downloadResults(self):
@@ -148,8 +157,12 @@ class MainWidget(QtGui.QWidget):
     def showAddJobDialog(self, templatePath=None):
         addJobDialog = AddJobDialog(self, templatePath)
         if addJobDialog.exec_():
-                info = addJobDialog.createConfigFile()
-                self.ui.addJob(info)
+            info = addJobDialog.createConfigFile()
+            if not self.ui.addJob(info):
+                QtGui.QMessageBox.warning(self,
+                    "Errors on submitting job:",
+                    "The job could not be uploaded!",
+                    QtGui.QMessageBox.Ok)
 
         self.updateTables()
 
@@ -160,3 +173,37 @@ class MainWidget(QtGui.QWidget):
             jobLog = self.ui.getJobLog(jobId)
             jobLogDialog = JobInfoDialog(jobLog)
             jobLogDialog.exec_()
+
+    def updateJob(self):
+        paths = []
+        for path in QtGui.QFileDialog.getOpenFileNames(self, "Select Files which will be added to the job"):
+            path.append(str(path))
+
+        rows = self.jobTable.getSelectedRows()
+        if len(paths) > 0 and len(rows) == 1:
+            if not self.ui.updateJobData(str(self.jobTable.item(rows[0], 1).text()), paths):
+                QtGui.QMessageBox.warning(self,
+                    "Failure",
+                    "The job could not be updated!",
+                    QtGui.QMessageBox.Ok)
+
+    def shutdownAll(self):
+        if QtGui.QMessageBox.question(self, 
+            "Shutting down", 
+            "Are you sure, you want to shutdown the system?\nAll currently running jobs are aborted!",
+            QtGui.QMessageBox.Ok | QtGui.QMessageBox.No,
+            QtGui.QMessageBox.No) == QtGui.QMessageBox.Ok:
+            self.ui.shutdownAll()
+
+    def shutdownWS(self):
+        workstations = []
+        for row in self.wsTable.getSelectedRows():
+            workstations.append(str(self.wsTable.item(row, 0).text()))
+
+        if len(workstations) > 0:
+            if QtGui.QMessageBox.question(self, 
+                "Shutting down", 
+                "Are you sure, you want to shutdown these workstations?\n{}\nAll currently running jobs are aborted!".format(workstations),
+                QtGui.QMessageBox.Ok | QtGui.QMessageBox.No,
+                QtGui.QMessageBox.No) == QtGui.QMessageBox.Ok:
+                self.ui.shutdownAll()            
