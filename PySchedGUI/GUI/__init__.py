@@ -80,7 +80,7 @@ class GUI(QtGui.QMainWindow):
             self.connectAct.setEnabled(True)
             self.disconnectAct.setEnabled(False)
             if self.adminToolBar:
-                self.removeToolbar(self.adminToolBar)
+                self.adminToolBar.setEnabled(False)
 
     def closeConnection(self):
         self.pySchedUI.closeConnection()   
