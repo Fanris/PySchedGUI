@@ -66,17 +66,21 @@ class JobTable(QtGui.QTableWidget):
         self.setRowCount(len(jobs))
         row = 0
         for job in jobs:
-            stateIdItem = QtGui.QTableWidgetItem()
-            if "RUNNING" in job.get("stateId", ""):
-                stateIdItem.setIcon(QtGui.QIcon(":/images/running.png"))
-            elif "DONE" in job.get("stateId", ""):
-                stateIdItem.setIcon(QtGui.QIcon(":/images/done.png"))
-            elif "ERROR" in job.get("stateId", ""):
-                stateIdItem.setIcon(QtGui.QIcon(":/images/error.png"))
-            else:
-                stateIdItem.setIcon(QtGui.QIcon(":/images/clock.png"))
+            try:
+                stateIdItem = QtGui.QTableWidgetItem()
+                if "RUNNING" in job.get("stateId", ""):
+                    stateIdItem.setIcon(QtGui.QIcon(":/images/running.png"))
+                elif "DONE" in job.get("stateId", ""):
+                    stateIdItem.setIcon(QtGui.QIcon(":/images/done.png"))
+                elif "ERROR" in job.get("stateId", ""):
+                    stateIdItem.setIcon(QtGui.QIcon(":/images/error.png"))
+                else:
+                    stateIdItem.setIcon(QtGui.QIcon(":/images/clock.png"))
 
-            self.setItem(row, 0, stateIdItem)
+                self.setItem(row, 0, stateIdItem)
+            except:
+                pass
+                
             self.setItem(row, 1, QtGui.QTableWidgetItem(str(job.get("jobId", None))))
             self.setItem(row, 2, QtGui.QTableWidgetItem(str(job.get("userId", None))))
             self.setItem(row, 3, QtGui.QTableWidgetItem(str(job.get("jobName", None))))
