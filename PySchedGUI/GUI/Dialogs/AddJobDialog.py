@@ -165,40 +165,36 @@ class AddJobDialog(QtGui.QDialog):
 
     def openTemplate(self, templatePath=None):
         if not templatePath:
-            templatePath = QtGui.QFileDialog.getOpenFileName(self, "Select a Template file")
+            templatePath = QtGui.QFileDialog.getOpenFileName(self, "Select a Template file")    
        
         if templatePath:
             info = TemplateParser.ParseTemplate(str(templatePath))
-            if info.get("jobName", ""):
+            if info:
                 self.jobNameWidget.setText(info.get("jobName", ""))
-
-            if info.get("jobDescription", ""):
-                self.jobDescriptionWidget.document().setPlainText(info.get("jobDescription", ""))
-
-            if info.get("multiCpu", False):                
+                self.jobDescriptionWidget.document().setPlainText(info.get("jobDescription", ""))             
                 self.multiCpuWidget.setChecked(info.get("multiCpu", False))
 
-            if info.get("minCpu", 1):
-                self.minCpuCountWidget.setValue(info.get("minCpu", 1))
+                try:
+                    self.minCpuCountWidget.setValue(int(info.get("minCpu", 1)))
+                except:
+                    pass
 
-            if info.get("minMemory", 0):
-                self.minMemoryWidget.setValue(info.get("minMemory", 0))
+                try:
+                    self.minMemoryWidget.setValue(int(info.get("minMemory", 0)))
+                except:
+                    pass
 
-            paths = ""
-            for p in info.get("paths", []):
-                paths += p + "\n"            
-            self.pathWidget.appendPlainText(paths.strip())
+                paths = ""
+                for p in info.get("paths", []):
+                    paths += p + "\n"            
+                self.pathWidget.appendPlainText(paths.strip())
 
-            progs = ""
-            for p in info.get("reqPrograms", []):
-                progs += p + "\n"    
-            self.reqProgramsWidget.appendPlainText(progs.strip())
+                progs = ""
+                for p in info.get("reqPrograms", []):
+                    progs += p + "\n"    
+                self.reqProgramsWidget.appendPlainText(progs.strip())
 
-
-            if info.get("compilerStr", ""):
                 self.compilerWidget.setText(info.get("compilerStr", ""))
-
-            if info.get("executeStr", ""):
                 self.executeWidget.setText(info.get("executeStr", ""))
 
 
