@@ -6,7 +6,7 @@ Created on 2013-06-04 13:48
 '''
 
 
-from PyQt4 import QtCore, QtGui
+from PySide import QtCore, QtGui
 
 from PySchedGUI.PySchedUI.DataStructures import User
 
@@ -28,7 +28,7 @@ class UserDialog(QtGui.QDialog):
 
         self.formLayout = QtGui.QFormLayout(self.formLayoutWidget)
         self.formLayout.setRowWrapPolicy(QtGui.QFormLayout.WrapAllRows)
-        self.formLayout.setMargin(0)
+        self.formLayout.setContentsMargins(0, 0, 0, 0)
 
         
         self.label = QtGui.QLabel(self.formLayoutWidget)

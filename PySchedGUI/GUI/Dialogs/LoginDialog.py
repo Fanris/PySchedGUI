@@ -7,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PySide import QtCore, QtGui
 
 class LoginDialog(QtGui.QDialog):
     def __init__(self, parent=None, rsa=None):
@@ -27,7 +27,7 @@ class LoginDialog(QtGui.QDialog):
 
         self.formLayout = QtGui.QFormLayout(self.formLayoutWidget)
         self.formLayout.setRowWrapPolicy(QtGui.QFormLayout.WrapAllRows)
-        self.formLayout.setMargin(0)
+        self.formLayout.setContentsMargins(0, 0, 0, 0)
 
         self.label = QtGui.QLabel(self.formLayoutWidget)
         self.label.setText("User ID:")

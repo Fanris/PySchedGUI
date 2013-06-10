@@ -22,7 +22,7 @@ class AddJobDialog(QtGui.QDialog):
         self.formLayoutWidget.setGeometry(QtCore.QRect(10, 10, 680, 140))
 
         self.formLayout = QtGui.QFormLayout(self.formLayoutWidget)
-        self.formLayout.setMargin(0)
+        self.formLayout.setContentsMargins(0, 0, 0, 0)
 
         self.label = QtGui.QLabel(self.formLayoutWidget)
         self.label.setText("Job Name")
@@ -48,7 +48,7 @@ class AddJobDialog(QtGui.QDialog):
 
         self.formLayout_2 = QtGui.QFormLayout(self.formLayoutWidget_2)
         self.formLayout_2.setRowWrapPolicy(QtGui.QFormLayout.WrapAllRows)
-        self.formLayout_2.setMargin(0)
+        self.formLayout_2.setContentsMargins(0, 0, 0, 0)
 
         self.label_3 = QtGui.QLabel(self.formLayoutWidget_2)
         self.label_3.setText("Multiple CPUs")
@@ -104,7 +104,7 @@ class AddJobDialog(QtGui.QDialog):
 
         self.formLayout_3 = QtGui.QFormLayout(self.formLayoutWidget_3)
         self.formLayout_3.setRowWrapPolicy(QtGui.QFormLayout.WrapAllRows)
-        self.formLayout_3.setMargin(0)
+        self.formLayout_3.setContentsMargins(0, 0, 0, 0)
 
         self.label_8 = QtGui.QLabel(self.formLayoutWidget_3)
         self.label_8.setText("Required Programs:")
@@ -169,36 +169,24 @@ class AddJobDialog(QtGui.QDialog):
        
         if templatePath:
             info = TemplateParser.ParseTemplate(str(templatePath))
-            if info.get("jobName", ""):
+            if info:
                 self.jobNameWidget.setText(info.get("jobName", ""))
-
-            if info.get("jobDescription", ""):
-                self.jobDescriptionWidget.document().setPlainText(info.get("jobDescription", ""))
-
-            if info.get("multiCpu", False):                
+                self.jobDescriptionWidget.document().setPlainText(info.get("jobDescription", ""))             
                 self.multiCpuWidget.setChecked(info.get("multiCpu", False))
-
-            if info.get("minCpu", 1):
                 self.minCpuCountWidget.setValue(info.get("minCpu", 1))
-
-            if info.get("minMemory", 0):
                 self.minMemoryWidget.setValue(info.get("minMemory", 0))
 
-            paths = ""
-            for p in info.get("paths", []):
-                paths += p + "\n"            
-            self.pathWidget.appendPlainText(paths.strip())
+                paths = ""
+                for p in info.get("paths", []):
+                    paths += p + "\n"            
+                self.pathWidget.appendPlainText(paths.strip())
 
-            progs = ""
-            for p in info.get("reqPrograms", []):
-                progs += p + "\n"    
-            self.reqProgramsWidget.appendPlainText(progs.strip())
+                progs = ""
+                for p in info.get("reqPrograms", []):
+                    progs += p + "\n"    
+                self.reqProgramsWidget.appendPlainText(progs.strip())
 
-
-            if info.get("compilerStr", ""):
                 self.compilerWidget.setText(info.get("compilerStr", ""))
-
-            if info.get("executeStr", ""):
                 self.executeWidget.setText(info.get("executeStr", ""))
 
 

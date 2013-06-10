@@ -4,7 +4,7 @@ Created on 2013-05-27 13:13
 @summary: Application Window
 @author: predki
 '''
-from PyQt4 import QtGui, QtCore
+from PySide import QtGui, QtCore
 
 from Widgets.MainWidget import MainWidget
 from Dialogs.LoginDialog import LoginDialog

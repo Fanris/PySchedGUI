@@ -6,7 +6,7 @@ Created on 2013-01-15 13:23
 @author: predki
 '''
 
-from PyQt4 import QtGui
+from PySide import QtGui
 
 from PySchedGUI.PySchedUI import PySchedUI
 from PySchedGUI.GUI import GUI

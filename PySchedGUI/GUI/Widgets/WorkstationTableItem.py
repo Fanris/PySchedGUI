@@ -5,7 +5,7 @@ Created on 2013-06-10 11:55
 @author: predki
 '''
 
-from PyQt4 import QtGui
+from PySide import QtGui
 
 class WorkstationTableItem(object):
     def __init__(self, workstationInfo):

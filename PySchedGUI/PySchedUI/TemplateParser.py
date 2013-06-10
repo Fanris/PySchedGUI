@@ -16,6 +16,7 @@ def ParseTemplate(pathToTemplate):
     @result: the template as a dictionary
     '''
     if not os.path.exists(pathToTemplate):
+        print "Path {} does not exists".format(pathToTemplate)
         return False
 
     with open(pathToTemplate) as templateFile:
@@ -32,6 +33,7 @@ def ParseTemplate(pathToTemplate):
                 continue
 
             if not parse(line, currentSection, template):
+                print "Could not parse line: {}".format(line)
                 return False
 
     return template

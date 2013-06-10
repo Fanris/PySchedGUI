@@ -5,7 +5,7 @@ Created on 2013-05-03 11:52
 @author: Martin predki
 '''
 
-from PyQt4 import QtGui, QtCore
+from PySide import QtGui, QtCore
 
 from JobTable import JobTable
 from WorkstationTable import WSTable
@@ -24,7 +24,7 @@ class MainWidget(QtGui.QWidget):
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 10, 110, 80))
         self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setSpacing(0)
-        self.verticalLayout.setMargin(0)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
 
         self.addJobBtn = QtGui.QPushButton(self.verticalLayoutWidget)
         self.addJobBtn.setText("Add Job")

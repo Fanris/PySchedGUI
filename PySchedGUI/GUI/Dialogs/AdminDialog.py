@@ -5,7 +5,7 @@ Created on 2013-06-04 12:25
 @author: Martin Predki
 '''
 
-from PyQt4 import QtCore, QtGui
+from PySide import QtCore, QtGui
 
 from PySchedGUI.GUI.Widgets.UserTable import UserTable
 from PySchedGUI.GUI.Widgets.ProgramTable import ProgramTable

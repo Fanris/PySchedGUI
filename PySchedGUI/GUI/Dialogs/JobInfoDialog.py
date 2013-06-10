@@ -1,4 +1,4 @@
-from PyQt4 import QtCore, QtGui
+from PySide import QtCore, QtGui
 
 class JobInfoDialog(QtGui.QDialog):
     def __init__(self, jobLog, parent=None):

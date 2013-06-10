@@ -1,4 +1,4 @@
-from PyQt4 import QtCore, QtGui
+from PySide import QtGui
 
 class ProgramTable(QtGui.QTableWidget):
     def __init__(self, parent=None):
