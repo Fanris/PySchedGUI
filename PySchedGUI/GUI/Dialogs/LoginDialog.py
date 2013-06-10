@@ -65,4 +65,4 @@ class LoginDialog(QtGui.QDialog):
         return str(self.userIdEdit.text()), str(self.rsaEdit.text()), self.saveRSA.isChecked()
 
     def openFileDialog(self):
-        self.rsaEdit.setText(QtGui.QFileDialog.getOpenFileName(self, "Select a RSA-Keyfile"))
+        self.rsaEdit.setText(QtGui.QFileDialog.getOpenFileName(self, "Select a RSA-Keyfile"))[0]

@@ -165,7 +165,7 @@ class AddJobDialog(QtGui.QDialog):
 
     def openTemplate(self, templatePath=None):
         if not templatePath:
-            templatePath = QtGui.QFileDialog.getOpenFileName(self, "Select a Template file")
+            templatePath = QtGui.QFileDialog.getOpenFileName(self, "Select a Template file")[0]        
        
         if templatePath:
             info = TemplateParser.ParseTemplate(str(templatePath))
@@ -173,8 +173,16 @@ class AddJobDialog(QtGui.QDialog):
                 self.jobNameWidget.setText(info.get("jobName", ""))
                 self.jobDescriptionWidget.document().setPlainText(info.get("jobDescription", ""))             
                 self.multiCpuWidget.setChecked(info.get("multiCpu", False))
-                self.minCpuCountWidget.setValue(info.get("minCpu", 1))
-                self.minMemoryWidget.setValue(info.get("minMemory", 0))
+
+                try:
+                    self.minCpuCountWidget.setValue(int(info.get("minCpu", 1)))
+                except:
+                    pass
+
+                try:
+                    self.minMemoryWidget.setValue(int(info.get("minMemory", 0)))
+                except:
+                    pass
 
                 paths = ""
                 for p in info.get("paths", []):
