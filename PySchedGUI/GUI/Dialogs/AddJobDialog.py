@@ -1,4 +1,4 @@
-from PyQt4 import QtCore, QtGui
+from PySide import QtCore, QtGui
 from PySchedGUI.PySchedUI import TemplateParser
 
 class AddJobDialog(QtGui.QDialog):

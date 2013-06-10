@@ -392,6 +392,21 @@ class PySchedUI(object):
                 userId=self.userId,
                 workstationName=ws)
 
+    def setMaintenanceMode(self, listOfDicts):
+        '''
+        @summary: Set Maintenance Mode for the given workstations.
+        @param listOfDicts: key = WorkstationName, Value = True or False wether 
+        the workstation should set to maintenance or not
+        @result: 
+        '''
+        for d in listOfDicts:
+            d["userId"] = self.userId
+            self._setMaintenance(d)
+
+    def _setMaintenance(self, uiDict):
+        self.network.sendCommand("setMaintenance", **uiDict)
+
+
     def fileDownloadCompleted(self, pathToFile, jobId):
         self.network.sendCommand("fileDownloadCompleted", waitForResponse=False,
             path=pathToFile, jobId=jobId)

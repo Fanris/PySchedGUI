@@ -1,5 +1,7 @@
 from PyQt4 import QtGui
 
+from WorkstationTableItem import WorkstationTableItem
+
 class WSTable(QtGui.QTableWidget):
     def __init__(self, parent=None):
         QtGui.QTableWidget.__init__(self, parent)
@@ -12,10 +14,12 @@ class WSTable(QtGui.QTableWidget):
         self.horizontalHeader().setStretchLastSection(True)
 
         self.setHeaders()
+        self.currentItems = []
 
     def setHeaders(self):
-        self.setColumnCount(9)
+        self.setColumnCount(10)
         self.setHorizontalHeaderLabels([
+            "",
             "Machine Name", 
             "Version",
             "Active Jobs",
@@ -24,10 +28,12 @@ class WSTable(QtGui.QTableWidget):
             "Memory Load",
             "Disk (Available / Free)",
             "Programs",
-            "Machine"])
+            "Machine",
+            "Maintenance"])
 
     def updateTable(self, workstations, server):
-        self.clearContents()        
+        self.clearContents()
+        self.currentItems = []       
         row = 0
 
         if not workstations and not server:
@@ -39,24 +45,21 @@ class WSTable(QtGui.QTableWidget):
         self.setRowCount(len(workstations))
 
         for workstation in workstations:
-            self.setItem(row, 0, QtGui.QTableWidgetItem(str(workstation.get("workstationName", "N/A"))))
-            self.setItem(row, 1, QtGui.QTableWidgetItem(str(workstation.get("version", "N/A"))))
-            self.setItem(row, 2, QtGui.QTableWidgetItem(str(workstation.get("activeJobs", "N/A"))))
-            self.setItem(row, 3, QtGui.QTableWidgetItem(str(workstation.get("cpuCount", "N/A"))))
-            self.setItem(row, 4, QtGui.QTableWidgetItem(str(workstation.get("cpuLoad", "N/A"))))
-            self.setItem(row, 5, QtGui.QTableWidgetItem(str(workstation.get("memoryLoad", "N/A"))))
-            self.setItem(row, 6, QtGui.QTableWidgetItem("{}GB / {}GB ({}%)".format(
-                    workstation.get("diskAvailable", 0),
-                    workstation.get("diskFree", 0),
-                    100 - float(workstation.get("diskLoad", 100)))))
-            self.setItem(row, 7, QtGui.QTableWidgetItem(str(workstation.get("programs", "N/A"))))
-            self.setItem(row, 8, QtGui.QTableWidgetItem(str(workstation.get("machine", "N/A"))))
-            row += 1    
+            wsItem = WorkstationTableItem(workstation)
+            wsItem.addToTable(row, self)
+            self.currentItems.append(wsItem)
+            row += 1
+
 
         self.horizontalHeader().resizeSections(QtGui.QHeaderView.ResizeToContents)
 
     def contextMenuEvent(self, event):
         menu = QtGui.QMenu(self)
+
+        maintenanceAction = menu.addAction("(De)Activate Maintenance Mode")
+        maintenanceAction.setEnabled(self.parent().ui.isAdmin)
+
+        menu.addSeparator()
 
         shutdownAllAction = menu.addAction("Shutdown all")
         shutdownAllAction.setEnabled(self.parent().ui.isAdmin)
@@ -70,6 +73,8 @@ class WSTable(QtGui.QTableWidget):
             self.parent().shutdownWS()            
         elif action == shutdownAllAction:
             self.parent().shutdownAll()
+        elif action == maintenanceAction:
+            self.parent().setMaintenanceMode()
 
     def getSelectedRows(self):
         rows=[]
@@ -77,3 +82,10 @@ class WSTable(QtGui.QTableWidget):
             if not idx.row() in rows:
                 rows.append(idx.row())  
         return rows
+
+    def getSelectedItems(self):
+        rows = self.getSelectedRows()
+        items = []
+        for index in rows:
+            items.append(self.currentItems[index])
+        return items

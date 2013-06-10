@@ -208,3 +208,13 @@ class MainWidget(QtGui.QWidget):
                 QtGui.QMessageBox.Ok | QtGui.QMessageBox.No,
                 QtGui.QMessageBox.No) == QtGui.QMessageBox.Ok:
                 self.ui.shutdownWs(workstations)            
+
+    def setMaintenanceMode(self):
+        selectedWS = self.wsTable.getSelectedItems()
+        wsDict = []
+        for item in selectedWS:
+            wsDict.append({
+                "workstationName": item.getInfo("workstationName", None),
+                "maintenance": not item.getInfo("maintenance", False)
+                })
+        self.ui.setMaintenanceMode(wsDict)
