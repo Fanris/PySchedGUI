@@ -15,49 +15,58 @@ from PySchedGUI.GUI.Dialogs.JobInfoDialog import JobInfoDialog
 from PySchedGUI.PySchedUI.DataStructures import JobState
 
 
-class MainWidget(QtGui.QWidget):    
+class MainWidget(QtGui.QSplitter):    
     def __init__(self, parent=None):
         self.ui = parent.pySchedUI
-        QtGui.QWidget.__init__(self, parent)
+        QtGui.QSplitter.__init__(self, parent)
 
-        self.verticalLayoutWidget = QtGui.QWidget(self)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 10, 110, 80))
-        self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
-        self.verticalLayout.setSpacing(0)
-        self.verticalLayout.setMargin(0)
+        self.setOrientation(QtCore.Qt.Vertical)
 
-        self.addJobBtn = QtGui.QPushButton(self.verticalLayoutWidget)
+        self.upperSplitterWidget = QtGui.QWidget()
+        upperHorizontalLayout = QtGui.QHBoxLayout(self.upperSplitterWidget)        
+        upperHorizontalLayout.setContentsMargins(10, 10, 10, 5)
+
+        btnWidget = QtGui.QWidget()              
+        verticalLayoutBtns = QtGui.QVBoxLayout(btnWidget)
+        verticalLayoutBtns.setContentsMargins(0, 0, 0, 0)
+
+        self.addJobBtn = QtGui.QPushButton()
         self.addJobBtn.setText("Add Job")
         self.addJobBtn.connect(self.addJobBtn, QtCore.SIGNAL("clicked()"),
             self.showAddJobDialog)
-        self.verticalLayout.addWidget(self.addJobBtn)
+        verticalLayoutBtns.addWidget(self.addJobBtn)
 
-        self.refreshBtn = QtGui.QPushButton(self.verticalLayoutWidget)
+        self.refreshBtn = QtGui.QPushButton()
         self.refreshBtn.setText("Refresh")
         self.refreshBtn.connect(self.refreshBtn, QtCore.SIGNAL("clicked()"),
             self.updateTables)
-        self.verticalLayout.addWidget(self.refreshBtn)
+        verticalLayoutBtns.addWidget(self.refreshBtn)
+        verticalLayoutBtns.addStretch()
 
-        self.jobTable = JobTable(self)
-        self.jobTable.setGeometry(QtCore.QRect(130, 10, 860, 415))
+        self.jobTable = JobTable()        
 
-        self.wsTable = WSTable(self)
-        self.wsTable.setGeometry(QtCore.QRect(10, 435, 990, 155))
+
+        self.lowerSplitterWidget = QtGui.QWidget()
+        lowerHorizontalLayout = QtGui.QHBoxLayout(self.lowerSplitterWidget)        
+        lowerHorizontalLayout.setContentsMargins(10, 5, 10, 10)
+        self.wsTable = WSTable()
+
+        upperHorizontalLayout.addWidget(btnWidget)
+        upperHorizontalLayout.addWidget(self.jobTable)
+        self.addWidget(self.upperSplitterWidget)
+
+        lowerHorizontalLayout.addWidget(self.wsTable)
+        self.addWidget(self.lowerSplitterWidget)
 
     def resizeEvent (self, QResizeEvent):
-        jobTableWidth = self.geometry().width() - 140
-        jobTableHeight = self.geometry().height() * 0.75 - 15
-        self.jobTable.setGeometry(130, 10, 
-            jobTableWidth, 
-            jobTableHeight)
+        if QResizeEvent.oldSize().height() == -1:
+            return 
+            
+        s1 = self.geometry().height() * float(self.sizes()[0]) / float(QResizeEvent.oldSize().height())
+        s2 = self.geometry().height() * float(self.sizes()[1]) / float(QResizeEvent.oldSize().height())
 
-        wsTableWidth = self.geometry().width() - 20
-        wsTableTop = self.geometry().height() * 0.75 + 5
-        wsTableHeight = self.geometry().height() * 0.25 - 10
-        self.wsTable.setGeometry(10, 
-            wsTableTop,
-            wsTableWidth,
-            wsTableHeight)
+        self.setSizes([s1, s2])
+
 
     def updateTables(self):
         jobs = self.ui.getJobs(archived=False, adminMode=self.parent().adminMode)
