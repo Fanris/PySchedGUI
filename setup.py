@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name='PySchedGUI',
-      version='1.1',
+      version='2.6',
       description='PySchedGUI - A graphical user Interface for PySched.',
       author='Martin Predki',
       author_email='martin.predki@rub.de',
