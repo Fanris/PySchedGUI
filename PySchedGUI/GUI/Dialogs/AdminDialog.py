@@ -39,7 +39,7 @@ class AdminDialog(QtGui.QDialog):
         deleteUserBtn.setGeometry(QtCore.QRect(10, 78, 100, 24))
         QtCore.QObject.connect(deleteUserBtn, QtCore.SIGNAL("clicked()"), self.deleteUser)        
 
-        self.userTable = UserTable(self)
+        self.userTable = UserTable(self, self)
         self.userTable.setGeometry(QtCore.QRect(120, 10, 590, 300))
 
         newProgramBtn = QtGui.QPushButton("New Program", parent=self)
@@ -57,7 +57,7 @@ class AdminDialog(QtGui.QDialog):
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.accept)    
         QtCore.QMetaObject.connectSlotsByName(self)    
 
-        self.programTable = ProgramTable(self)
+        self.programTable = ProgramTable(self, self)
         self.programTable.setGeometry(QtCore.QRect(120, 320, 590, 250))        
 
         self.userTable.updateTable(self.pySchedUI.getUsers())
@@ -67,7 +67,7 @@ class AdminDialog(QtGui.QDialog):
         userDialog = UserDialog(parent=self)
         if userDialog.exec_():
             user = userDialog.getInfos()
-            self.parent().pySchedUI.createUser(user)
+            self.pySchedUI.createUser(user)
             self.userTable.updateTable(self.pySchedUI.getUsers())
 
     def showEditUserDialog(self):
@@ -85,7 +85,7 @@ class AdminDialog(QtGui.QDialog):
         userDialog = UserDialog(parent=self, user=u)
         if userDialog.exec_():
             user = userDialog.getInfos()
-            self.parent().pySchedUI.createUser(user)
+            self.pySchedUI.createUser(user)
             self.userTable.updateTable(self.pySchedUI.getUsers())
 
 
@@ -107,7 +107,7 @@ class AdminDialog(QtGui.QDialog):
         programDialog = ProgramDialog(parent=self)
         if programDialog.exec_():
             program = programDialog.getInfos()
-            self.parent().pySchedUI.addProgram(program)
+            self.pySchedUI.addProgram(program)
             self.programTable.updateTable(self.pySchedUI.getPrograms())
 
     def showEditProgramDialog(self):
@@ -125,7 +125,7 @@ class AdminDialog(QtGui.QDialog):
         programDialog = ProgramDialog(parent=self, program=program)
         if programDialog.exec_():
             program = programDialog.getInfos()
-            self.parent().pySchedUI.addProgram(program)
+            self.pySchedUI.addProgram(program)
             self.programTable.updateTable(self.pySchedUI.getPrograms())
 
     def deleteProgram(self):
@@ -139,5 +139,5 @@ class AdminDialog(QtGui.QDialog):
             "Are you sure you want to delete the program: {}".format(programName),
             QtGui.QMessageBox.Ok | QtGui.QMessageBox.No,
             QtGui.QMessageBox.No) == QtGui.QMessageBox.Ok:
-            self.parent().pySchedUI.deleteProgram(programName)
+            self.pySchedUI.deleteProgram(programName)
             self.programTable.updateTable(self.pySchedUI.getPrograms())     

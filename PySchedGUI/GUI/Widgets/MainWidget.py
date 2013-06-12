@@ -43,13 +43,12 @@ class MainWidget(QtGui.QSplitter):
         verticalLayoutBtns.addWidget(self.refreshBtn)
         verticalLayoutBtns.addStretch()
 
-        self.jobTable = JobTable()        
-
+        self.jobTable = JobTable(mainWidget=self)        
 
         self.lowerSplitterWidget = QtGui.QWidget()
         lowerHorizontalLayout = QtGui.QHBoxLayout(self.lowerSplitterWidget)        
         lowerHorizontalLayout.setContentsMargins(10, 5, 10, 10)
-        self.wsTable = WSTable()
+        self.wsTable = WSTable(mainWidget=self)
 
         upperHorizontalLayout.addWidget(btnWidget)
         upperHorizontalLayout.addWidget(self.jobTable)

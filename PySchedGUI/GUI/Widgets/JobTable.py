@@ -3,9 +3,10 @@ from PyQt4 import QtCore, QtGui
 from PySchedGUI.GUI import Icons
 
 class JobTable(QtGui.QTableWidget):
-    def __init__(self, parent=None):
+    def __init__(self, mainWidget, parent=None):
         QtGui.QTableWidget.__init__(self, parent)
-        
+        self.mainWidget = mainWidget
+
         self.setAcceptDrops(True)
         self.setDragDropMode(QtGui.QAbstractItemView.DropOnly)
         self.setDefaultDropAction(QtCore.Qt.CopyAction)
@@ -120,19 +121,19 @@ class JobTable(QtGui.QTableWidget):
 
         action = menu.exec_(self.mapToGlobal(event.pos()))
         if action == downloadResultsAction:
-            self.parent().downloadResults()
+            self.mainWidget.downloadResults()
         elif action == deleteJobAction:
-            self.parent().deleteJob()
+            self.mainWidget.deleteJob()
         elif action == pauseJobAction:
-            self.parent().pauseJob()
+            self.mainWidget.pauseJob()
         elif action == resumeJobAction:
-            self.parent().resumeJob()
+            self.mainWidget.resumeJob()
         elif action == abortJobAction:
-            self.parent().abortJob()
+            self.mainWidget.abortJob()
         elif action == updateJobAction:
-            self.parent().updateJob()
+            self.mainWidget.updateJob()
         elif action == showJobDetailsAction:
-            self.parent().showJobDetails()
+            self.mainWidget.showJobDetails()
 
     def getSelectedRows(self):
         rows=[]

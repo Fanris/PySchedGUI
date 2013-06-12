@@ -285,7 +285,10 @@ class PySchedUI(object):
         self.network.sendCommand("archiveJob", waitForResponse=False, userId=userId, jobId=jobId)
 
     def forceSchedule(self):
-        self.network.sendCommand("schedule", waitForResponse=False)
+        param = {
+            "userId": self.userId,
+        }
+        self.network.sendCommand("schedule", waitForResponse=False, **param)
 
     def pauseJobs(self, jobIdList):
         for jobId in jobIdList:
