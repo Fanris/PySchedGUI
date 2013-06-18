@@ -32,6 +32,7 @@ def ParseTemplate(pathToTemplate):
                 continue
 
             if not parse(line, currentSection, template):
+                print "ERROR! Could not parse line {}!".format(line)
                 return False
 
     return template

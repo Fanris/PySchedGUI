@@ -10,6 +10,7 @@ from PyQt4 import QtGui
 
 from PySchedGUI.PySchedUI import PySchedUI
 from PySchedGUI.GUI import GUI
+from PySchedGUI.UI import UI
 
 import argparse
 import sys
@@ -26,11 +27,14 @@ def main():
     parser.add_argument("-q", '--quiet', action='store_true', help="Be quiet")
     parser.add_argument('-u', '--user', help="The username to use for this session")
     parser.add_argument('-m', '--multicast', help="A Multicast group on which the GUI should listen for a server")
-    parser.set_defaults(func=gui)  
 
     subparser = parser.add_subparsers(help='commands')
+
     guiParser = subparser.add_parser('gui', help='Starts the graphical user interface')
     guiParser.set_defaults(func=gui)
+
+    uiParser = subparser.add_parser('ui', help='Starts the console based user interface')
+    uiParser.set_defaults(func=ui)
     
     addJobParser = subparser.add_parser('addjob', help='Directly schedules a Job from a template')
     addJobParser.add_argument("template", help='The job template to schedule')
@@ -47,6 +51,11 @@ def gui(args):
 
 def addJob(args):
     pass
+
+def ui(args):
+    pySchedUI = PySchedUI(args, cmd=None)
+    ui = UI(pySchedUI)
+    ui.showMainMenu()
 
 if __name__ == "__main__":
     main()

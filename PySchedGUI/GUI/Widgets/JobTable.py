@@ -41,7 +41,7 @@ class JobTable(QtGui.QTableWidget):
             for url in event.mimeData().urls():
                 paths.append(str(url.toLocalFile()))
             
-            self.parent().addJobs(paths)
+            self.mainWidget.addJobs(paths)
         else:
             event.ignore()
 
@@ -101,11 +101,14 @@ class JobTable(QtGui.QTableWidget):
         singleSelectionActionsEnabled = True
         rows = self.getSelectedRows()
         if len(rows) > 1:
-            singleSelectionActionsEnabled = False
+            singleSelectionActionsEnabled = False    
 
         showJobDetailsAction = menu.addAction("Show Job Details")
         showJobDetailsAction.setEnabled(singleSelectionActionsEnabled)
-        menu.addSeparator()
+        menu.addSeparator()        
+
+        getFileContentAction = menu.addAction("Get File")
+        getFileContentAction.setEnabled(singleSelectionActionsEnabled) 
 
         updateJobAction = menu.addAction("Update Job")    
         updateJobAction.setEnabled(singleSelectionActionsEnabled)
@@ -134,6 +137,8 @@ class JobTable(QtGui.QTableWidget):
             self.mainWidget.updateJob()
         elif action == showJobDetailsAction:
             self.mainWidget.showJobDetails()
+        elif action == getFileContentAction:
+            self.mainWidget.getFileContent()
 
     def getSelectedRows(self):
         rows=[]

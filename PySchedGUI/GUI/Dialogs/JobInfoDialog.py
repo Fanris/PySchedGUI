@@ -13,7 +13,7 @@ class JobInfoDialog(QtGui.QDialog):
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
 
         textBrowser = QtGui.QTextBrowser(parent=self)
-        textBrowser.setGeometry(QtCore.QRect(10, 10, 480, 350))
+        textBrowser.setGeometry(QtCore.QRect(10, 10, 480, 350))                    
         textBrowser.append(jobLog)
 
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.accept)

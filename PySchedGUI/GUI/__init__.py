@@ -20,7 +20,7 @@ class GUI(QtGui.QMainWindow):
         self.adminMode = False
 
         self.resize(1000, 600)
-        self.setWindowTitle('PySched GUI v2.6')
+        self.setWindowTitle('PySched GUI v{}'.format(self.pySchedUI.version))
 
         self.mainWidget = MainWidget(parent=self)
         self.setCentralWidget(self.mainWidget)
