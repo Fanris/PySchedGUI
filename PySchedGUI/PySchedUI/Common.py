@@ -1,5 +1,6 @@
 import os
 import tarfile
+import FileUtils
 
 
 def getCamelCase(s):
@@ -21,22 +22,6 @@ def parseToNumber(s):
     except ValueError:
         return s
 
-def readBytesFromFile(pathToFile, chunk_size=1000):
-    '''
-    @summary: Reads the given File chunk-wise.
-    @param pathToFile: Path to File
-    @param chunk_size: Size of each chunk
-    @result: Returns the next chunk of the File
-    '''
-    with open(pathToFile, 'rb') as f:
-        while True:
-            chunk = f.read(chunk_size)
-
-            if chunk:
-                yield chunk
-            else:
-                break
-
 def pack(outputPath, *args):
     '''
     @summary: Creates an uncompressed tar-File with all files specified in args.
@@ -52,6 +37,8 @@ def pack(outputPath, *args):
 
     tar = tarfile.open(outputPath, "w")
     for filename in args:
+        filename = filename.strip()
+        filename = FileUtils.expandPath(filename)        
         if not os.path.exists(filename.strip("*")):
             print "Error on creating archive! File {} does not exist!".format(filename.strip("*"))
             return False
@@ -82,16 +69,9 @@ def addToArchive(tar, filename, arcName):
     if os.path.isdir(filename):
         files = os.listdir(filename)
         for f in files:
+            f = f.strip()
+            f = FileUtils.expandPath(f)
             addToArchive(tar, os.path.join(filename, f), os.path.join(arcName, os.path.split(f)[1]))
 
     else:
         tar.add(name=filename, arcname=arcName)
-
-def deleteFile(pathToFile):
-    '''
-    @summary: Deletes a file
-    @param pathToFile: The file to delete
-    @result:
-    '''
-    if os.path.exists(pathToFile):
-        os.remove(pathToFile)

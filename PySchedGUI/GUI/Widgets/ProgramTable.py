@@ -1,8 +1,9 @@
 from PySide import QtGui
 
 class ProgramTable(QtGui.QTableWidget):
-    def __init__(self, parent=None):
+    def __init__(self, mainWidget, parent=None):
         QtGui.QTableWidget.__init__(self, parent)
+        self.mainWidget = mainWidget
         
         self.setAlternatingRowColors(True)
         self.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
@@ -41,15 +42,6 @@ class ProgramTable(QtGui.QTableWidget):
             row += 1 
 
         self.horizontalHeader().resizeSections(QtGui.QHeaderView.ResizeToContents)
-
-    def contextMenuEvent(self, event):
-        menu = QtGui.QMenu(self)
-        deleteJobAction = menu.addAction("Delete User(s)")
-
-
-        action = menu.exec_(self.mapToGlobal(event.pos()))
-        if action == deleteJobAction:
-            self.parent().deleteJob()
 
     def getSelectedRows(self):
         rows=[]

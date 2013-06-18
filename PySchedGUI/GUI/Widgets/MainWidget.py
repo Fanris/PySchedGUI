@@ -11,6 +11,7 @@ from JobTable import JobTable
 from WorkstationTable import WSTable
 from PySchedGUI.GUI.Dialogs.AddJobDialog import AddJobDialog
 from PySchedGUI.GUI.Dialogs.JobInfoDialog import JobInfoDialog
+from PySchedGUI.GUI.Dialogs.JobFolderDialog import JobFolderDialog
 
 from PySchedGUI.PySchedUI.DataStructures import JobState
 
@@ -42,13 +43,12 @@ class MainWidget(QtGui.QSplitter):
         verticalLayoutBtns.addWidget(self.refreshBtn)
         verticalLayoutBtns.addStretch()
 
-        self.jobTable = JobTable()        
-
+        self.jobTable = JobTable(mainWidget=self)        
 
         self.lowerSplitterWidget = QtGui.QWidget()
         lowerHorizontalLayout = QtGui.QHBoxLayout(self.lowerSplitterWidget)        
         lowerHorizontalLayout.setContentsMargins(10, 5, 10, 10)
-        self.wsTable = WSTable()
+        self.wsTable = WSTable(mainWidget=self)
 
         upperHorizontalLayout.addWidget(btnWidget)
         upperHorizontalLayout.addWidget(self.jobTable)
@@ -226,3 +226,14 @@ class MainWidget(QtGui.QSplitter):
                 "maintenance": not item.getInfo("maintenance", False)
                 })
         self.ui.setMaintenanceMode(wsDict)
+
+    def getFileContent(self):
+        rows = self.jobTable.getSelectedRows()
+        if len(rows) > 0:
+            jobId = str(self.jobTable.item(rows[0], 1).text())
+            jobContent = self.ui.getJobFolder(jobId)
+            jobFolderDialog = JobFolderDialog(jobId, jobContent)
+            if jobFolderDialog.exec_():
+                content = self.ui.getFileContent(jobId, str(jobFolderDialog.getSelectedFile()))
+                jobLogDialog = JobInfoDialog(content)
+                jobLogDialog.exec_()

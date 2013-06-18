@@ -20,7 +20,7 @@ class GUI(QtGui.QMainWindow):
         self.adminMode = False
 
         self.resize(1000, 600)
-        self.setWindowTitle('PySched GUI v2.6')
+        self.setWindowTitle('PySched GUI v{}'.format(self.pySchedUI.version))
 
         self.mainWidget = MainWidget(parent=self)
         self.setCentralWidget(self.mainWidget)
@@ -105,11 +105,17 @@ class GUI(QtGui.QMainWindow):
         self.adminModeCheckBox = QtGui.QCheckBox("Admin Mode")
         QtCore.QObject.connect(self.adminModeCheckBox, QtCore.SIGNAL("stateChanged(int)"), self.changeAdminMode)
 
+        self.forceScheduleBtn = QtGui.QPushButton("Force Scheduling")
+        QtCore.QObject.connect(self.forceScheduleBtn, QtCore.SIGNAL("clicked()"), self.forceScheduling)
+
         self.adminToolBar = QtGui.QToolBar("Admin Toolbar")
         self.addToolBar(self.adminToolBar)
         act = self.adminToolBar.addAction(QtGui.QIcon(":images/adminMode.png"), "Admin Menu")
         QtCore.QObject.connect(act, QtCore.SIGNAL("triggered()"), self.showAdminMenu)
-        self.adminWidget = self.adminToolBar.addWidget(self.adminModeCheckBox)
+        
+        self.adminToolBar.addWidget(self.adminModeCheckBox)
+        self.adminToolBar.addWidget(self.forceScheduleBtn)
+
 
     def connectBtn(self):
         self.showLoginDialog()
@@ -152,3 +158,6 @@ class GUI(QtGui.QMainWindow):
     def exit(self):
         self.pySchedUI.closeConnection()
         self.close()
+
+    def forceScheduling(self):
+        self.pySchedUI.forceSchedule()

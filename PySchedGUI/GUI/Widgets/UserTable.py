@@ -1,8 +1,9 @@
 from PySide import QtGui
 
 class UserTable(QtGui.QTableWidget):
-    def __init__(self, parent=None):
+    def __init__(self, mainWidget, parent=None):
         QtGui.QTableWidget.__init__(self, parent)
+        self.mainWidget = mainWidget
         
         self.setAlternatingRowColors(True)
         self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)

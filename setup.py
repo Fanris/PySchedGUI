@@ -3,8 +3,8 @@
 from setuptools import setup
 
 setup(name='PySchedGUI',
-      version='2.6',
-      description='PySchedGUI - A graphical user Interface for PySched.',
+      version='1.0',
+      description='PySchedGUI - The user Interface for PySched.',
       author='Martin Predki',
       author_email='martin.predki@rub.de',
       url='https://github.com/Fanris/PySchedGUI',
@@ -12,6 +12,7 @@ setup(name='PySchedGUI',
       packages=[
             'PySchedGUI',
             'PySchedGUI.GUI',
+            'PySchedGUI.UI',
             'PySchedGUI.PySchedUI',            
             'PySchedGUI.PySchedUI.Network'],
       install_requires=['paramiko',],

@@ -3,9 +3,10 @@ from PySide import QtCore, QtGui
 from PySchedGUI.GUI import Icons
 
 class JobTable(QtGui.QTableWidget):
-    def __init__(self, parent=None):
+    def __init__(self, mainWidget, parent=None):
         QtGui.QTableWidget.__init__(self, parent)
-        
+        self.mainWidget = mainWidget
+
         self.setAcceptDrops(True)
         self.setDragDropMode(QtGui.QAbstractItemView.DropOnly)
         self.setDefaultDropAction(QtCore.Qt.CopyAction)
@@ -40,7 +41,7 @@ class JobTable(QtGui.QTableWidget):
             for url in event.mimeData().urls():
                 paths.append(str(url.toLocalFile()))
             
-            self.parent().addJobs(paths)
+            self.mainWidget.addJobs(paths)
         else:
             event.ignore()
 
@@ -100,11 +101,14 @@ class JobTable(QtGui.QTableWidget):
         singleSelectionActionsEnabled = True
         rows = self.getSelectedRows()
         if len(rows) > 1:
-            singleSelectionActionsEnabled = False
+            singleSelectionActionsEnabled = False    
 
         showJobDetailsAction = menu.addAction("Show Job Details")
         showJobDetailsAction.setEnabled(singleSelectionActionsEnabled)
-        menu.addSeparator()
+        menu.addSeparator()        
+
+        getFileContentAction = menu.addAction("Get File")
+        getFileContentAction.setEnabled(singleSelectionActionsEnabled) 
 
         updateJobAction = menu.addAction("Update Job")    
         updateJobAction.setEnabled(singleSelectionActionsEnabled)
@@ -120,19 +124,21 @@ class JobTable(QtGui.QTableWidget):
 
         action = menu.exec_(self.mapToGlobal(event.pos()))
         if action == downloadResultsAction:
-            self.parent().downloadResults()
+            self.mainWidget.downloadResults()
         elif action == deleteJobAction:
-            self.parent().deleteJob()
+            self.mainWidget.deleteJob()
         elif action == pauseJobAction:
-            self.parent().pauseJob()
+            self.mainWidget.pauseJob()
         elif action == resumeJobAction:
-            self.parent().resumeJob()
+            self.mainWidget.resumeJob()
         elif action == abortJobAction:
-            self.parent().abortJob()
+            self.mainWidget.abortJob()
         elif action == updateJobAction:
-            self.parent().updateJob()
+            self.mainWidget.updateJob()
         elif action == showJobDetailsAction:
-            self.parent().showJobDetails()
+            self.mainWidget.showJobDetails()
+        elif action == getFileContentAction:
+            self.mainWidget.getFileContent()
 
     def getSelectedRows(self):
         rows=[]

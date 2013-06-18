@@ -3,9 +3,10 @@ from PySide import QtGui
 from WorkstationTableItem import WorkstationTableItem
 
 class WSTable(QtGui.QTableWidget):
-    def __init__(self, parent=None):
+    def __init__(self, mainWidget, parent=None):
         QtGui.QTableWidget.__init__(self, parent)
-        
+        self.mainWidget = mainWidget
+
         self.setAlternatingRowColors(True)
         self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
@@ -57,24 +58,24 @@ class WSTable(QtGui.QTableWidget):
         menu = QtGui.QMenu(self)
 
         maintenanceAction = menu.addAction("(De)Activate Maintenance Mode")
-        maintenanceAction.setEnabled(self.parent().ui.isAdmin)
+        maintenanceAction.setEnabled(self.mainWidget.ui.isAdmin)
 
         menu.addSeparator()
 
         shutdownAllAction = menu.addAction("Shutdown all")
-        shutdownAllAction.setEnabled(self.parent().ui.isAdmin)
+        shutdownAllAction.setEnabled(self.mainWidget.ui.isAdmin)
 
         shutdownWSAction = menu.addAction("Shutdown Workstation(s)")    
-        shutdownWSAction.setEnabled(self.parent().ui.isAdmin)
+        shutdownWSAction.setEnabled(self.mainWidget.ui.isAdmin)
 
 
         action = menu.exec_(self.mapToGlobal(event.pos()))
         if action == shutdownWSAction:
-            self.parent().shutdownWS()            
+            self.mainWidget.shutdownWS()            
         elif action == shutdownAllAction:
-            self.parent().shutdownAll()
+            self.mainWidget.shutdownAll()
         elif action == maintenanceAction:
-            self.parent().setMaintenanceMode()
+            self.mainWidget.setMaintenanceMode()
 
     def getSelectedRows(self):
         rows=[]

@@ -6,7 +6,7 @@ Created on 2012-10-08 16:09
 '''
 
 from Network import Network
-from Common import pack, deleteFile
+from Common import pack
 from UIDict import UIDict
 
 import TemplateParser
@@ -25,6 +25,8 @@ class PySchedUI(object):
         @summary: Initializes the PySchedUI
         @result:
         '''
+        self.version = "1.0.0"
+
         self.initializeLogger(args)
         self.debug = args.debug
         self.userId = args.user or None        
@@ -48,7 +50,7 @@ class PySchedUI(object):
                 self.closeConnection()
 
     def openConnection(self):
-        self.network = Network(self, self.debug, keyFile=self.rsaKey, multicast=self.multicastGroup)
+        self.network = Network(self, self.debug, keyFile=FileUtils.expandPath(self.rsaKey), multicast=self.multicastGroup)
         if self.network.openConnection():
             userAuth, self.isAdmin = self._checkUser(self.userId)
             if not userAuth:
@@ -120,7 +122,8 @@ class PySchedUI(object):
         '''
         uiDict["userId"] = self.userId
         if uiDict.get("template", None):
-            uiDict.update(TemplateParser.ParseTemplate(uiDict.get("template", None)))
+            jobDict = TemplateParser.ParseTemplate(uiDict.get("template", None))
+            uiDict.update(jobDict)
             del uiDict["template"]
 
         paths = uiDict.get("paths", [])
@@ -145,7 +148,7 @@ class PySchedUI(object):
                     path = pack("{}.tar".format(jobId), *paths)
                     if path:                
                         self.network.sendFileSFTP(path, remotePath, callback=None)                    
-                        deleteFile(path)
+                        FileUtils.deleteFile(path)
                         self.network.sendCommand("fileUploadCompleted", waitForResponse=True, path=remotePath, jobId=jobId)
                         return True
                     else:
@@ -285,7 +288,10 @@ class PySchedUI(object):
         self.network.sendCommand("archiveJob", waitForResponse=False, userId=userId, jobId=jobId)
 
     def forceSchedule(self):
-        self.network.sendCommand("schedule", waitForResponse=False)
+        param = {
+            "userId": self.userId,
+        }
+        self.network.sendCommand("schedule", waitForResponse=False, **param)
 
     def pauseJobs(self, jobIdList):
         for jobId in jobIdList:
@@ -334,7 +340,7 @@ class PySchedUI(object):
                 self.logger.info("Sending Files... ")
                 if path:                
                     self.network.sendFileSFTP(path, remotePath, callback=None)                    
-                    deleteFile(path)
+                    FileUtils.deleteFile(path)
                     self.network.sendCommand("fileUploadCompleted", waitForResponse=True, path=remotePath, jobId=jobId)
                     return True
         else:
@@ -351,6 +357,28 @@ class PySchedUI(object):
             }
             self.logger.info("Get Results of {}".format(jobId))
             self._getResultsSFTP(param)
+        return True
+
+    def getAllResults(self, path):
+        jobs = self.getJobs()
+        endStates = [
+             "DONE",
+             "ABORTED",
+             "SCHEDULER_ERROR",
+             "COMPILER_ERROR",
+             "WORKSTATION_ERROR",
+             "PERMISSION_DENIED",
+             "ERROR",
+        ]
+        for job in jobs:
+            if job.get("stateId", None) in endStates:
+                param = {
+                    "userId"    : self.userId,
+                    "jobId"     : job.get("jobId", ""),
+                    "path"      : path,
+                }
+                self._getResultsSFTP(param)
+        return True
 
     def _getResultsSFTP(self, uiDict):
         jobId = uiDict.get("jobId", None)
@@ -372,6 +400,7 @@ class PySchedUI(object):
                 "jobId"     : jobId,
             }
             self._deleteJob(param)        
+        return True
 
     def _deleteJob(self, uiDict):
         returnValue = self.network.sendCommand("deleteJob", waitForResponse=True, **uiDict)
@@ -379,11 +408,13 @@ class PySchedUI(object):
             return True
         return False
 
-    def shutdownServer(self, uiDict):
-        self.network.sendCommand("shutdown", waitForResponse=True, **uiDict)
+    def shutdownServer(self):
+        self.network.sendCommand("shutdown", waitForResponse=True, userId=self.userId)
+        return True
 
     def shutdownAll(self):
         self.network.sendCommand("shutdownAll", waitForResponse=False, userId=self.userId)
+        return True
 
     def shutdownWs(self, listOfWorkstationNames):
         for ws in listOfWorkstationNames:
@@ -391,6 +422,7 @@ class PySchedUI(object):
                 waitForResponse=False, 
                 userId=self.userId,
                 workstationName=ws)
+        return True
 
     def setMaintenanceMode(self, listOfDicts):
         '''
@@ -402,6 +434,7 @@ class PySchedUI(object):
         for d in listOfDicts:
             d["userId"] = self.userId
             self._setMaintenance(d)
+        return True
 
     def _setMaintenance(self, uiDict):
         self.network.sendCommand("setMaintenance", **uiDict)
@@ -410,4 +443,28 @@ class PySchedUI(object):
     def fileDownloadCompleted(self, pathToFile, jobId):
         self.network.sendCommand("fileDownloadCompleted", waitForResponse=False,
             path=pathToFile, jobId=jobId)
+        return True
 
+    def getJobFolder(self, jobId):
+        param = {
+            "userId": self.userId,
+            "jobId": jobId
+        }
+        return self._getJobFolder(param)
+
+    def _getJobFolder(self, uiDict):
+        returnValue = self.network.sendCommand("getJobDirStruct", **uiDict)
+        return returnValue.get("content", [])
+
+    def getFileContent(self, jobId, path, lineCount=0):
+        param = {
+            "userId": self.userId,
+            "jobId": jobId,       
+            "path": path,
+            "lineCount": lineCount, 
+        }
+        return self._getFileContent(param)
+
+    def _getFileContent(self, uiDict):
+        returnValue = self.network.sendCommand("getFileFromWS", **uiDict)
+        return returnValue.get("content", [])
