@@ -6,7 +6,7 @@ Created on 2013-05-23 13:23
 '''
 
 from IMenu import IMenu
-from PySchedUI.UIDict import UIDict
+from PySchedGUI.PySchedUI.UIDict import UIDict
 
 import Tables
 import CommonUI
