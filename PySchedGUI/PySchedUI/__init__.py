@@ -7,7 +7,6 @@ Created on 2012-10-08 16:09
 
 from Network import Network
 from Common import pack
-from FileUtils import deleteFile
 from UIDict import UIDict
 
 import TemplateParser
@@ -51,7 +50,7 @@ class PySchedUI(object):
                 self.closeConnection()
 
     def openConnection(self):
-        self.network = Network(self, self.debug, keyFile=self.rsaKey, multicast=self.multicastGroup)
+        self.network = Network(self, self.debug, keyFile=FileUtils.expandPath(self.rsaKey), multicast=self.multicastGroup)
         if self.network.openConnection():
             userAuth, self.isAdmin = self._checkUser(self.userId)
             if not userAuth:
@@ -149,7 +148,7 @@ class PySchedUI(object):
                     path = pack("{}.tar".format(jobId), *paths)
                     if path:                
                         self.network.sendFileSFTP(path, remotePath, callback=None)                    
-                        deleteFile(path)
+                        FileUtils.deleteFile(path)
                         self.network.sendCommand("fileUploadCompleted", waitForResponse=True, path=remotePath, jobId=jobId)
                         return True
                     else:
@@ -341,7 +340,7 @@ class PySchedUI(object):
                 self.logger.info("Sending Files... ")
                 if path:                
                     self.network.sendFileSFTP(path, remotePath, callback=None)                    
-                    deleteFile(path)
+                    FileUtils.deleteFile(path)
                     self.network.sendCommand("fileUploadCompleted", waitForResponse=True, path=remotePath, jobId=jobId)
                     return True
         else:
