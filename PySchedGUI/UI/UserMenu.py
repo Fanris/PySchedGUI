@@ -7,8 +7,8 @@ Created on 2013-05-23 13:33
 
 from IMenu import IMenu
 
-from PySchedUI.UIDict import UIDict
-from PySchedUI.DataStructures import User
+from PySchedGUI.PySchedUI.UIDict import UIDict
+from PySchedGUI.PySchedUI.DataStructures import User
 
 import CommonUI
 
