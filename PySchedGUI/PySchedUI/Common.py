@@ -1,5 +1,6 @@
 import os
 import tarfile
+import FileUtils
 
 
 def getCamelCase(s):
@@ -37,6 +38,7 @@ def pack(outputPath, *args):
     tar = tarfile.open(outputPath, "w")
     for filename in args:
         filename = filename.strip()
+        filename = FileUtils.expandPath(filename)        
         if not os.path.exists(filename.strip("*")):
             print "Error on creating archive! File {} does not exist!".format(filename.strip("*"))
             return False
@@ -68,6 +70,7 @@ def addToArchive(tar, filename, arcName):
         files = os.listdir(filename)
         for f in files:
             f = f.strip()
+            f = FileUtils.expandPath(f)
             addToArchive(tar, os.path.join(filename, f), os.path.join(arcName, os.path.split(f)[1]))
 
     else:
