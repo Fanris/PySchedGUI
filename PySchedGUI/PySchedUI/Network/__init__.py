@@ -5,13 +5,11 @@ Created on 2013-01-15 12:21
 @author: Martin Predki
 '''
 
-from PySchedGUI.PySchedUI.Common import readBytesFromFile
 from SSHTunnel import SSHTunnel
 
 import socket
 import struct
 import json
-import os
 import base64
 
 import logging
@@ -50,21 +48,6 @@ class Network(object):
             return self.listen()
         else:
             return None
-
-    def sendFile(self, path):
-        '''
-        @summary: Sends the given file to the workstation
-        @param pathToFile: Path to the file
-        @param jobId: Job id to which this file belongs
-        @result:
-        '''
-        filename = os.path.split(path)[1]
-        self.sendCommand("", waitForResponse=False, nCommand="put", filename=filename, md5="")
-
-        for bytes in readBytesFromFile(path):
-            self.sendCommand("", waitForResponse=False, nCommand="file", chunk=base64.b64encode(bytes))
-
-        return self.sendCommand("", waitForResponse=True, nCommand="fileOk")
 
     def sendFileSFTP(self, localPath, remotePath, callback):
         self.sshTunnel.sendFile(localPath, remotePath, callback)
