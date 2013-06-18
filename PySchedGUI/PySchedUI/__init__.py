@@ -6,7 +6,8 @@ Created on 2012-10-08 16:09
 '''
 
 from Network import Network
-from Common import pack, deleteFile
+from Common import pack
+from FileUtils import deleteFile
 from UIDict import UIDict
 
 import TemplateParser
