@@ -141,6 +141,9 @@ class PySchedUI(object):
                 return False
 
             returnValue = self.network.sendCommand("requestFileUpload", jobId=jobId)
+            if not returnValue:
+                return
+
             remotePath = returnValue.get("path", None)
 
             if remotePath:
@@ -190,7 +193,7 @@ class PySchedUI(object):
 
     def _getUsers(self, uiDict):
         returnValue = self.network.sendCommand("getUsers", **uiDict)
-        if returnValue.get("result", False):
+        if returnValue and returnValue.get("result", False):
             return returnValue.get("users", None)
 
     def deleteUser(self, email):
@@ -202,7 +205,8 @@ class PySchedUI(object):
 
     def _deleteUser(self, uiDict):
         returnValue = self.network.sendCommand("deleteUser", **uiDict)
-        return returnValue.get("result", False)
+        if returnValue:
+            return returnValue.get("result", False)
 
     def getJobs(self, archived=False, adminMode=False):
         param = {
@@ -214,14 +218,16 @@ class PySchedUI(object):
 
     def _getJobs(self, uiDict):
         returnValue = self.network.sendCommand("getJobs", **uiDict)
-        return returnValue.get("jobs", None)
+        if returnValue:
+            return returnValue.get("jobs", None)
 
     def getWorkstations(self):
         return self._getWorkstations()
 
     def _getWorkstations(self):
         returnValue = self.network.sendCommand("getWorkstations", userId=self.userId)
-        return returnValue.get("workstations", []), returnValue.get("server", None)
+        if returnValue:
+            return returnValue.get("workstations", []), returnValue.get("server", None)
 
     def getJobLog(self, jobId):
         param = {
@@ -232,7 +238,8 @@ class PySchedUI(object):
 
     def _getJobLog(self, uiDict):
         returnValue = self.network.sendCommand("getJobLog", waitForResponse=True, **uiDict)
-        return returnValue.get("log", "")
+        if returnValue:
+            return returnValue.get("log", "")
 
     def abortJobs(self, jobIdList):
         for jobId in jobIdList:
@@ -244,7 +251,7 @@ class PySchedUI(object):
 
     def _abortJob(self, uiDict):
         returnValue = self.network.sendCommand("killJob", **uiDict)
-        if returnValue.get("result", False):
+        if returnValue and returnValue.get("result", False):
             return True
 
         return False
@@ -261,14 +268,16 @@ class PySchedUI(object):
 
     def _addProgram(self, uiDict):
         returnValue = self.network.sendCommand("addProgram", **uiDict)
-        return returnValue.get("result", False)
+        if returnValue:
+            return returnValue.get("result", False)
 
     def getPrograms(self):
         return self._getPrograms()
 
     def _getPrograms(self):
         returnValue = self.network.sendCommand("getPrograms")
-        return returnValue.get("programs", None)
+        if returnValue:
+            return returnValue.get("programs", None)
 
     def deleteProgram(self, programName):
         param = {
@@ -279,7 +288,8 @@ class PySchedUI(object):
 
     def _deleteProgram(self, uiDict):
         returnValue = self.network.sendCommand("deleteProgram", **uiDict)
-        return returnValue.get("result", False)
+        if returnValue:
+            return returnValue.get("result", False)
 
     def checkJobs(self):
         self.network.sendCommand("checkJobs", waitForResponse=False)
@@ -333,6 +343,9 @@ class PySchedUI(object):
         if path:                
             self.logger.debug("Sending File... {} ".format(path))
             returnValue = self.network.sendCommand("requestFileUpload", jobId=jobId)
+            if not returnValue:
+                return
+
             remotePath = returnValue.get("path", None)
 
             if remotePath:
@@ -383,7 +396,7 @@ class PySchedUI(object):
     def _getResultsSFTP(self, uiDict):
         jobId = uiDict.get("jobId", None)
         returnValue = self.network.sendCommand("requestFileDownload", **uiDict)
-        if returnValue.get("result", False):
+        if returnValue and returnValue.get("result", False):
             localPath = uiDict.get("path", None)
             remotePath = returnValue.get("path", None)
             if remotePath and localPath:
@@ -404,7 +417,7 @@ class PySchedUI(object):
 
     def _deleteJob(self, uiDict):
         returnValue = self.network.sendCommand("deleteJob", waitForResponse=True, **uiDict)
-        if returnValue.get("result", False):
+        if returnValue and returnValue.get("result", False):
             return True
         return False
 
@@ -454,7 +467,8 @@ class PySchedUI(object):
 
     def _getJobFolder(self, uiDict):
         returnValue = self.network.sendCommand("getJobDirStruct", **uiDict)
-        return returnValue.get("content", [])
+        if returnValue:
+            return returnValue.get("content", [])
 
     def getFileContent(self, jobId, path, lineCount=0):
         param = {
@@ -467,4 +481,5 @@ class PySchedUI(object):
 
     def _getFileContent(self, uiDict):
         returnValue = self.network.sendCommand("getFileFromWS", **uiDict)
-        return returnValue.get("content", [])
+        if returnValue:
+            return returnValue.get("content", [])

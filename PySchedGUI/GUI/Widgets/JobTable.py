@@ -103,12 +103,16 @@ class JobTable(QtGui.QTableWidget):
         if len(rows) > 1:
             singleSelectionActionsEnabled = False    
 
-        showJobDetailsAction = menu.addAction("Show Job Details")
+        showJobDetailsAction = menu.addAction("Show Job Details")        
         showJobDetailsAction.setEnabled(singleSelectionActionsEnabled)
         menu.addSeparator()        
 
         getFileContentAction = menu.addAction("Get File")
-        getFileContentAction.setEnabled(singleSelectionActionsEnabled) 
+        if singleSelectionActionsEnabled and \
+            self.getItemText(rows[0], 4) in ["RUNNING", "PAUSED"]:
+            getFileContentAction.setEnabled(singleSelectionActionsEnabled)
+        else:
+            getFileContentAction.setEnabled(False)
 
         updateJobAction = menu.addAction("Update Job")    
         updateJobAction.setEnabled(singleSelectionActionsEnabled)
@@ -146,3 +150,6 @@ class JobTable(QtGui.QTableWidget):
             if not idx.row() in rows:
                 rows.append(idx.row())  
         return rows
+
+    def getItemText(self, row, column):
+        return self.item(row, column).text()
