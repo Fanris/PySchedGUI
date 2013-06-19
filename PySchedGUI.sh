@@ -47,7 +47,9 @@ def gui(args):
     pySchedUI = PySchedUI(args, cmd=None)
     mainWindow = GUI(pySchedUI)
     mainWindow.showGUI()
-    sys.exit(CONST_APP.exec_())
+    CONST_APP.exec_()
+    mainWindow.close()
+    sys.exit(0)    
 
 def addJob(args):
     pass
