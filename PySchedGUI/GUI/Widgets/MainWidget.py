@@ -88,9 +88,8 @@ class MainWidget(QtGui.QSplitter):
         self.updateTables()
 
     def downloadResults(self):
-        pathToSave = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory")[0])
-
-        self.parent().pySchedUI.logger.debug("Selected folder: {}".format(pathToSave))
+        pathToSave = QtGui.QFileDialog.getExistingDirectory(self, "Select Directory")
+        
         if not pathToSave:
             return
         rows = self.jobTable.getSelectedRows()         
