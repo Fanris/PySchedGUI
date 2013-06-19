@@ -5,7 +5,7 @@ Created on 2013-06-12 13:02
 @author: predki
 '''
 
-from PyQt4 import QtCore, QtGui
+from PySide import QtCore, QtGui
 
 import os
 
