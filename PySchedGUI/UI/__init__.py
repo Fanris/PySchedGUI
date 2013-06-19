@@ -100,7 +100,7 @@ class UI(object):
                     (self.pySchedUI.isAdmin and self.functionList[functionIndex].get("admin", False)):
                     
                     availableFunctions[functionIndex + 1] = self.functionList[functionIndex]["function"]
-                    print "{index}: {display}".format(index=functionIndex + 1, display=self.functionList[functionIndex]["display"])
+                    print "{}: {}".format(str(functionIndex + 1).rjust(2), self.functionList[functionIndex]["display"])
             print
 
             selected = raw_input("What do you want to do? ")
