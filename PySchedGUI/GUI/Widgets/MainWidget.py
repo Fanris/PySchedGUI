@@ -232,6 +232,9 @@ class MainWidget(QtGui.QSplitter):
         if len(rows) > 0:
             jobId = str(self.jobTable.item(rows[0], 1).text())
             jobContent = self.ui.getJobFolder(jobId)
+            if not jobContent:
+                return
+                
             jobFolderDialog = JobFolderDialog(jobId, jobContent)
             if jobFolderDialog.exec_():
                 content = self.ui.getFileContent(jobId, str(jobFolderDialog.getSelectedFile()))

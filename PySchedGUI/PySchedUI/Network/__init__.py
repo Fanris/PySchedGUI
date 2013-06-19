@@ -72,27 +72,30 @@ class Network(object):
         self.sshTunnel.getFile(remotePath, localPath, callback)
 
     def listen(self):
-        while True:
-            # New line signals a command.
-            if "\r\n" in self.receivedData:
-                # Split the received Data in an command chunk and the rest.
-                (commandDict, leftover) = self.receivedData.split('\r\n', 1)
-                self.logger.debug("new data: {}".format(commandDict))
+        try:
+            while True:
+                # New line signals a command.
+                if "\r\n" in self.receivedData:
+                    # Split the received Data in an command chunk and the rest.
+                    (commandDict, leftover) = self.receivedData.split('\r\n', 1)
+                    self.logger.debug("new data: {}".format(commandDict))
 
-                # Save the leftover in the receivedData
-                self.receivedData = leftover
+                    # Save the leftover in the receivedData
+                    self.receivedData = leftover
 
-                # parse the command dict to a python dictionary
-                commandDict = json.loads(commandDict)
+                    # parse the command dict to a python dictionary
+                    commandDict = json.loads(commandDict)
 
-                # break the listen loop
-                return commandDict
-            else:
-                self.receivedData += self.connection.recv(1024)
-                #self.logger.debug("Received Data: {}".format(self.receivedData))
+                    # break the listen loop
+                    return commandDict
+                else:
+                    self.receivedData += self.connection.recv(1024)
+                    #self.logger.debug("Received Data: {}".format(self.receivedData))
+        except socket.timeout:
+            self.logger.warning("Request aborted: Timeout")
+            return None
 
-
-    def openConnection(self, timeout=None):                
+    def openConnection(self, timeout=10):                
         udpPort = 50000
         multicast = self.multicast or DEFAULT_MULTICAST
         self.logger.debug("connecting to multicast group: {}:{}".format(multicast, udpPort))
