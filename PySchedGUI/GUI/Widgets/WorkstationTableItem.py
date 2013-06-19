@@ -6,6 +6,7 @@ Created on 2013-06-10 11:55
 '''
 
 from PySide import QtGui
+from PySchedGUI.GUI import Icons
 
 class WorkstationTableItem(object):
     def __init__(self, workstationInfo):

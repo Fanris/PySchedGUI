@@ -15,10 +15,6 @@ from PySchedGUI.UI import UI
 import argparse
 import sys
 
-style = QtGui.QStyleFactory.create('Plastique')
-QtGui.QApplication.setStyle(style)
-CONST_APP = QtGui.QApplication([""])
-
 def main():
     parser = argparse.ArgumentParser(description="PySched UI")
     parser.add_argument("-v", '--verbose', action='store_true', help="Be more verbose")
@@ -44,12 +40,14 @@ def main():
     args.func(args)
 
 def gui(args):
+    QtGui.QApplication.setStyle('Plastique')
+    CONST_APP = QtGui.QApplication([""])    
+
     pySchedUI = PySchedUI(args, cmd=None)
     mainWindow = GUI(pySchedUI)
+    
     mainWindow.showGUI()
-    CONST_APP.exec_()
-    mainWindow.close()
-    sys.exit(0)    
+    sys.exit(CONST_APP.exec_())    
 
 def addJob(args):
     pass
