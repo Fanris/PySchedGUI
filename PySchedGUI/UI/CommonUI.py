@@ -14,7 +14,7 @@ def showValidatingInput(inp):
     print "================================================"
     print
     for k, v in inp.getInfos().iteritems():
-        print "{key}: \t\t{value}".format(key=inp.getScreenName(k), value=v)
+        print "{key}: \t\t\t{value}".format(key=inp.getScreenName(k), value=v)
 
     return showYesNo("Are these values correct? (y / n): ")
 
@@ -56,6 +56,12 @@ def getIntInput(text, default=None, help=None):
 
 def getPathInput(text, default=None, help=None):
     path = raw_input(text + "> ")
+    if path == "":
+        if default:
+            return default
+        else:
+            return path
+
     path = FileUtils.expandPath(path)
 
     if not path or path == "" and default:

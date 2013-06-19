@@ -34,7 +34,7 @@ class AddJobMenu(IMenu):
             CommonUI.getTextInput("(Optional) A short description of the job"))
 
         print "Please enter the path to the PySched-Config file or nothing if you want to create a new template:"
-        temp =  CommonUI.getPathInput("")
+        temp = CommonUI.getPathInput("")
         if temp != "":
             inp.addInfo("Template-File", "template", os.path.normpath(temp))
         else: 
@@ -42,7 +42,7 @@ class AddJobMenu(IMenu):
 
         if CommonUI.showValidatingInput(inp):
             if self.pySchedUI.addJob(inp.getInfos()):
-                Tables.showJobTable(self.pySchedUI, inp.getInfos())
+                Tables.showJobTable(self.pySchedUI)
 
     def createTemplate(self, inp):
             '''
