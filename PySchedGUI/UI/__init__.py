@@ -76,7 +76,9 @@ class UI(object):
         if not self.pySchedUI.rsaKey:
             self.pySchedUI.rsaKey = CommonUI.askForRSAKey()
 
-        self.pySchedUI.openConnection()
+        if not self.pySchedUI.openConnection():
+            print "Error! Could not connect to server!"
+            return
 
         print
         print
