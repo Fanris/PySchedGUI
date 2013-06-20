@@ -20,6 +20,7 @@ def main():
     parser.add_argument("-q", '--quiet', action='store_true', help="Be quiet")
     parser.add_argument('-u', '--user', help="The username to use for this session")
     parser.add_argument('-m', '--multicast', help="A Multicast group on which the GUI should listen for a server")
+    parser.add_argument('-s', '--server', help="The Server to connect to. (This disables the automatic search for a server!)")
 
     subparser = parser.add_subparsers(help='commands')
 
@@ -34,7 +35,7 @@ def main():
     args.func(args)   
 
 def addJob(args):
-    pass
+    PySchedUI(args, cmd="addJob")
 
 def ui(args):
     pySchedUI = PySchedUI(args, cmd=None)
