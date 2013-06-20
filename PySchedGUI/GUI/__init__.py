@@ -102,20 +102,23 @@ class GUI(QtGui.QMainWindow):
         self.show()
 
     def showAdminToolBar(self):
+        spacer = QtGui.QWidget()
+        spacer.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding) 
+
         self.adminModeCheckBox = QtGui.QCheckBox("Admin Mode")
         QtCore.QObject.connect(self.adminModeCheckBox, QtCore.SIGNAL("stateChanged(int)"), self.changeAdminMode)
 
         self.forceScheduleBtn = QtGui.QPushButton("Force Scheduling")
         QtCore.QObject.connect(self.forceScheduleBtn, QtCore.SIGNAL("clicked()"), self.forceScheduling)
-
-        self.adminToolBar = QtGui.QToolBar("Admin Toolbar")
+       
+        self.adminToolBar = QtGui.QToolBar("Admin Toolbar")        
         self.addToolBar(self.adminToolBar)
-        act = self.adminToolBar.addAction(QtGui.QIcon(":images/adminMode.png"), "Admin Menu")
-        QtCore.QObject.connect(act, QtCore.SIGNAL("triggered()"), self.showAdminMenu)
-        
+        self.adminToolBar.addWidget(spacer)
+
         self.adminToolBar.addWidget(self.adminModeCheckBox)
         self.adminToolBar.addWidget(self.forceScheduleBtn)
-
+        act = self.adminToolBar.addAction(QtGui.QIcon(":images/adminMode.png"), "Admin Menu")
+        QtCore.QObject.connect(act, QtCore.SIGNAL("triggered()"), self.showAdminMenu)
 
     def connectBtn(self):
         self.showLoginDialog()
