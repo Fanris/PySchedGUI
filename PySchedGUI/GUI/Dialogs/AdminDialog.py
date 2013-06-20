@@ -19,48 +19,73 @@ class AdminDialog(QtGui.QDialog):
         QtGui.QDialog.__init__(self, parent)
 
         self.pySchedUI = pySchedUI
-        self.resize(720, 580)
+        self.resize(720, 400)
         self.setWindowTitle("Admin Menu")
         self.buttonBox = QtGui.QDialogButtonBox(self)
-        self.buttonBox.setGeometry(QtCore.QRect(10, 540, 700, 30))
+        self.buttonBox.setGeometry(QtCore.QRect(10, 360, 700, 30))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
 
-        newUserBtn = QtGui.QPushButton("New User", parent=self)
+        self.tabWidget = QtGui.QTabWidget(parent=self)
+        self.tabWidget.setGeometry(QtCore.QRect(10, 10, 700, 340))
+        
+        # ===== CONTROL WIDGET
+        self.controlWidget = QtGui.QWidget()
+
+        forceSchedulingBtn = QtGui.QPushButton("Force scheduling", parent=self.controlWidget)
+        forceSchedulingBtn.setGeometry(QtCore.QRect(10, 10, 120, 24))
+        QtCore.QObject.connect(forceSchedulingBtn, QtCore.SIGNAL("clicked()"), self.pySchedUI.forceSchedule)
+
+        checkJobsBtn = QtGui.QPushButton("Force check jobs", parent=self.controlWidget)
+        checkJobsBtn.setGeometry(QtCore.QRect(10, 44, 120, 24))
+        QtCore.QObject.connect(forceSchedulingBtn, QtCore.SIGNAL("clicked()"), self.pySchedUI.checkJobs)
+
+        self.tabWidget.addTab(self.controlWidget, "General")
+
+        # ===== USER WIDGET
+        self.userWidget = QtGui.QWidget()
+        newUserBtn = QtGui.QPushButton("New User", parent=self.userWidget)
         newUserBtn.setGeometry(QtCore.QRect(10, 10, 100, 24))
         QtCore.QObject.connect(newUserBtn, QtCore.SIGNAL("clicked()"), self.showNewUserDialog)
 
-        editUserBtn = QtGui.QPushButton("Edit User", parent=self)
+        editUserBtn = QtGui.QPushButton("Edit User", parent=self.userWidget)
         editUserBtn.setGeometry(QtCore.QRect(10, 44, 100, 24))
         QtCore.QObject.connect(editUserBtn, QtCore.SIGNAL("clicked()"), self.showEditUserDialog)
 
-        deleteUserBtn = QtGui.QPushButton("Delete User", parent=self)
+        deleteUserBtn = QtGui.QPushButton("Delete User", parent=self.userWidget)
         deleteUserBtn.setGeometry(QtCore.QRect(10, 78, 100, 24))
         QtCore.QObject.connect(deleteUserBtn, QtCore.SIGNAL("clicked()"), self.deleteUser)        
 
-        self.userTable = UserTable(self, self)
-        self.userTable.setGeometry(QtCore.QRect(120, 10, 590, 300))
+        self.userTable = UserTable(self, self.userWidget)
+        self.userTable.setGeometry(QtCore.QRect(120, 10, 570, 300))
 
-        newProgramBtn = QtGui.QPushButton("New Program", parent=self)
-        newProgramBtn.setGeometry(QtCore.QRect(10, 320, 100, 24))
+        self.tabWidget.addTab(self.userWidget, "Users")
+
+        # ===== PROGRAM WIDGET
+        self.programWidget = QtGui.QWidget()
+        newProgramBtn = QtGui.QPushButton("New Program", parent=self.programWidget)
+        newProgramBtn.setGeometry(QtCore.QRect(10, 10, 100, 24))
         QtCore.QObject.connect(newProgramBtn, QtCore.SIGNAL("clicked()"), self.showNewProgramDialog)
 
-        editProgramBtn = QtGui.QPushButton("Edit Program", parent=self)
-        editProgramBtn.setGeometry(QtCore.QRect(10, 354, 100, 24))
+        editProgramBtn = QtGui.QPushButton("Edit Program", parent=self.programWidget)
+        editProgramBtn.setGeometry(QtCore.QRect(10, 44, 100, 24))
         QtCore.QObject.connect(editProgramBtn, QtCore.SIGNAL("clicked()"), self.showEditProgramDialog)
 
-        deleteProgramBtn = QtGui.QPushButton("Delete Program", parent=self)
-        deleteProgramBtn.setGeometry(QtCore.QRect(10, 388, 100, 24))
+        deleteProgramBtn = QtGui.QPushButton("Delete Program", parent=self.programWidget)
+        deleteProgramBtn.setGeometry(QtCore.QRect(10, 78, 100, 24))
         QtCore.QObject.connect(deleteProgramBtn, QtCore.SIGNAL("clicked()"), self.deleteProgram)     
+
+        self.programTable = ProgramTable(self, self.programWidget)
+        self.programTable.setGeometry(QtCore.QRect(120, 10, 570, 300))        
+
+        self.tabWidget.addTab(self.programWidget, "Programs")
 
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.accept)    
         QtCore.QMetaObject.connectSlotsByName(self)    
 
-        self.programTable = ProgramTable(self, self)
-        self.programTable.setGeometry(QtCore.QRect(120, 320, 590, 250))        
-
         self.userTable.updateTable(self.pySchedUI.getUsers())
         self.programTable.updateTable(self.pySchedUI.getPrograms())
+
 
     def showNewUserDialog(self):
         userDialog = UserDialog(parent=self)

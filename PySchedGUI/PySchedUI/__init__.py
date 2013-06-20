@@ -299,7 +299,7 @@ class PySchedUI(object):
             return returnValue.get("result", False)
 
     def checkJobs(self):
-        self.network.sendCommand("checkJobs", waitForResponse=False)
+        self.network.sendCommand("checkJobs", waitForResponse=False, userId=self.userId)
 
     def archiveJob(self, jobId, userId):
         self.network.sendCommand("archiveJob", waitForResponse=False, userId=userId, jobId=jobId)
