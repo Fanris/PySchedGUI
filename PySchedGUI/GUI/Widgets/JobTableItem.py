@@ -5,7 +5,7 @@ Created on 2013-06-10 11:55
 @author: predki
 '''
 
-from PyQt4 import QtGui
+from PySide import QtGui
 from PySchedGUI.GUI import Icons
 
 class JobTableItem(object):
