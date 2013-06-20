@@ -6,8 +6,6 @@ Created on 2013-01-15 13:23
 @author: predki
 '''
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 from PySide import QtGui
 
 from PySchedGUI.PySchedUI import PySchedUI
