@@ -94,13 +94,38 @@ class JobTable(QtGui.QTableWidget):
             getFileContentAction.setEnabled(False)
 
         updateJobAction = menu.addAction("Update Job")    
-        updateJobAction.setEnabled(singleSelectionActionsEnabled)
+        if singleSelectionActionsEnabled and \
+            self.getItemText(rows[0], 4) in ["RUNNING", "PAUSED"]:
+            updateJobAction.setEnabled(singleSelectionActionsEnabled)
+        else:
+            updateJobAction.setEnabled(False)
 
         pauseJobAction = menu.addAction("Pause Job(s)")
+        if self.getItemText(rows[0], 4) in ["RUNNING"]:
+            pauseJobAction.setEnabled(True)
+        else:
+            pauseJobAction.setEnabled(False)
+
         resumeJobAction = menu.addAction("Resume Job(s)")
+        if self.getItemText(rows[0], 4) in ["PAUSED"]:
+            resumeJobAction.setEnabled(True)
+        else:
+            resumeJobAction.setEnabled(False)
+
         abortJobAction = menu.addAction("Abort Job(s)")
+        if self.getItemText(rows[0], 4) in ["RUNNING", "PAUSED"]:
+            abortJobAction.setEnabled(True)
+        else:
+            abortJobAction.setEnabled(False)
+
         menu.addSeparator()
         downloadResultsAction = menu.addAction("Download results...")
+        if self.getItemText(rows[0], 4) not in \
+                ["RUNNING", "PAUSED", "COMPILED", "PREPARED", "DISPATCHED", "WAITING_FOR_WORKSTATION"]:
+            downloadResultsAction.setEnabled(True)
+        else:
+            downloadResultsAction.setEnabled(False)
+
         menu.addSeparator()
         deleteJobAction = menu.addAction("Delete Job(s)")
 
@@ -137,7 +162,7 @@ class JobTable(QtGui.QTableWidget):
         jobIds = []
         selectedRows = self.getSelectedRows()
         for row in selectedRows:
-            jobIds.append(self.getItemText(row, 1))
+            jobIds.append(str(self.getItemText(row, 1)))
 
         return jobIds
 
