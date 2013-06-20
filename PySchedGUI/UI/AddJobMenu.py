@@ -27,12 +27,7 @@ class AddJobMenu(IMenu):
         print
         print "Adding a new job..."
         print "================================================"
-        inp.addInfo("Jobname", "jobName", 
-            CommonUI.getTextInput("Please enter a job name"))
-
-        inp.addInfo("Description", "jobDescription", 
-            CommonUI.getTextInput("(Optional) A short description of the job"))
-
+        print
         print "Please enter the path to the PySched-Config file or nothing if you want to create a new template:"
         temp = CommonUI.getPathInput("")
         if temp != "":
@@ -51,9 +46,11 @@ class AddJobMenu(IMenu):
             @result: 
             '''
             newInp = UIDict()
-            newInp.addInfo("Username", "userId", inp.get("userId", ""))
-            newInp.addInfo("Job Name", "jobName", inp.get("jobName", ""))
-            newInp.addInfo("Job Description", "jobDescription", inp.get("jobDescription", ""))
+            inp.addInfo("Jobname", "jobName", 
+                CommonUI.getTextInput("Please enter a job name"))
+
+            inp.addInfo("Description", "jobDescription", 
+                CommonUI.getTextInput("(Optional) A short description of the job"))
             
             print
             print "Which operating system is needed for the job (default: Linux, '?' for help)?."

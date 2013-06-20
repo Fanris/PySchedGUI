@@ -6,18 +6,11 @@ Created on 2013-01-15 13:23
 @author: predki
 '''
 
-from PyQt4 import QtGui
-
 from PySchedGUI.PySchedUI import PySchedUI
-from PySchedGUI.GUI import GUI
 from PySchedGUI.UI import UI
 
 import argparse
 import sys
-
-style = QtGui.QStyleFactory.create('Plastique')
-QtGui.QApplication.setStyle(style)
-CONST_APP = QtGui.QApplication([""])
 
 def main():
     parser = argparse.ArgumentParser(description="PySched UI")
@@ -27,11 +20,9 @@ def main():
     parser.add_argument("-q", '--quiet', action='store_true', help="Be quiet")
     parser.add_argument('-u', '--user', help="The username to use for this session")
     parser.add_argument('-m', '--multicast', help="A Multicast group on which the GUI should listen for a server")
+    parser.add_argument('-s', '--server', help="The Server to connect to. (This disables the automatic search for a server!)")
 
     subparser = parser.add_subparsers(help='commands')
-
-    guiParser = subparser.add_parser('gui', help='Starts the graphical user interface')
-    guiParser.set_defaults(func=gui)
 
     uiParser = subparser.add_parser('ui', help='Starts the console based user interface')
     uiParser.set_defaults(func=ui)
@@ -41,18 +32,10 @@ def main():
     addJobParser.set_defaults(func=addJob)
 
     args = parser.parse_args()
-    args.func(args)
-
-def gui(args):
-    pySchedUI = PySchedUI(args, cmd=None)
-    mainWindow = GUI(pySchedUI)
-    mainWindow.showGUI()
-    CONST_APP.exec_()
-    mainWindow.close()
-    sys.exit(0)    
+    args.func(args)   
 
 def addJob(args):
-    pass
+    PySchedUI(args, cmd="addJob")
 
 def ui(args):
     pySchedUI = PySchedUI(args, cmd=None)

@@ -20,7 +20,7 @@ class Network(object):
     '''
     @summary: PySchedUI Network class
     '''
-    def __init__(self, pySchedUI, debug=False, keyFile=None, multicast=None):
+    def __init__(self, pySchedUI, debug=False, keyFile=None, multicast=None, server=None):
         self.logger = logging.getLogger("PySchedUI")
         self.pySchedUI = pySchedUI
         self.connection = None
@@ -29,6 +29,7 @@ class Network(object):
         self.keyFile = keyFile
         self.sshTunnel = None
         self.multicast = multicast
+        self.server = server
 
     def sendCommand(self, command, waitForResponse=True, 
             dryRun=False, **kwargs):
@@ -98,40 +99,46 @@ class Network(object):
     def openConnection(self, timeout=10):                
         udpPort = 50000
         multicast = self.multicast or DEFAULT_MULTICAST
-        self.logger.debug("connecting to multicast group: {}:{}".format(multicast, udpPort))
 
-        # Join multicast group
+        if not self.server:
+            self.logger.debug("connecting to multicast group: {}:{}".format(multicast, udpPort))
+            # Join multicast group
 
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 2)
-        sock.bind(('', udpPort))
-        sock.settimeout(timeout)
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 2)
+            sock.bind(('', udpPort))
+            sock.settimeout(timeout)
 
-        group = socket.inet_aton(multicast)
-        mreq = struct.pack('4sL', group, socket.INADDR_ANY)
-        sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+            group = socket.inet_aton(multicast)
+            mreq = struct.pack('4sL', group, socket.INADDR_ANY)
+            sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
-        self.logger.info("Searching for a PySchedServer...")
-        sock.sendto('{"nCommand": "ping"}', (multicast, udpPort))
+            self.logger.info("Searching for a PySchedServer...")
+            sock.sendto('{"nCommand": "ping"}', (multicast, udpPort))
 
-        msg = ""
-        while True:
-            try:
-                (msg, address) = sock.recvfrom(1024)
-                if "serverAvailable" in msg:
-                    commandDict = json.loads(msg)
-                    if commandDict["nCommand"] == "serverAvailable":
-                        self.logger.info("PySchedServer found.")
-                        sock.close()
-                        break
-            except socket.timeout:
-                self.logger.info("No PySched Server available!")
-                return None
+            msg = ""
+            while True:
+                try:
+                    (msg, address) = sock.recvfrom(1024)
+                    if "serverAvailable" in msg:
+                        commandDict = json.loads(msg)
+                        if commandDict["nCommand"] == "serverAvailable":
+                            self.logger.info("PySchedServer found.")
+                            sock.close()
+                            self.server = address[0]
+                            break
+                except socket.timeout:
+                    self.logger.info("No PySched Server available!")
+                    return None
+        else:
+            pass
+            #self.server = socket.gethostbyname(self.server)
+
 
         try:
             self.logger.info("Building up connection...")
-            ip = address[0]
+            ip = self.server
             self.sshTunnel = SSHTunnel(keyFile=self.keyFile, host=ip)
             localPort = self.sshTunnel.buildTunnel()
             if localPort:
@@ -143,7 +150,7 @@ class Network(object):
                 return True
 
         except Exception, e:
-            raise e
+            self.logger.error("Failed to connect: {}".format(e))            
 
         return False
 
