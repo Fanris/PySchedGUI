@@ -35,13 +35,14 @@ class PySchedUI(object):
         self.network = None
         self.isAdmin = False
         self.multicastGroup = args.multicast
+        self.server = args.server or None
 
         if cmd:
             self.logger.debug("Command = {}".format(cmd))
             if self.openConnection():
                 if cmd.lower() == "addjob":
                     uiDict = UIDict()
-                    uiDict.addInfo("Template-File", "template", os.path.normpath(args.template))
+                    uiDict.addInfo("Template-File", "template", os.path.normpath(FileUtils.expandPath(args.template)))
                     uiDict.addInfo("Username", "userId", self.userId)
                     self.logger.info("Scheduling job from {}".format(args.template))
                     self.addJob(uiDict.getInfos())
@@ -50,7 +51,13 @@ class PySchedUI(object):
                 self.closeConnection()
 
     def openConnection(self):
-        self.network = Network(self, self.debug, keyFile=FileUtils.expandPath(self.rsaKey), multicast=self.multicastGroup)
+        self.network = Network(
+            self, 
+            self.debug, 
+            keyFile=FileUtils.expandPath(self.rsaKey), 
+            multicast=self.multicastGroup,
+            server=self.server)
+
         if self.network.openConnection():
             userAuth, self.isAdmin = self._checkUser(self.userId)
             if not userAuth:
