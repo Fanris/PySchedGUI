@@ -1,5 +1,6 @@
 from PySide import QtCore, QtGui
 
+
 class JobInfoDialog(QtGui.QDialog):
     def __init__(self, jobLog, parent=None):
         QtGui.QDialog.__init__(self, parent)

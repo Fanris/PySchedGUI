@@ -8,6 +8,7 @@ Created on 2013-06-04 13:48
 
 from PySide import QtCore, QtGui
 
+
 from PySchedGUI.PySchedUI.DataStructures import User
 
 class UserDialog(QtGui.QDialog):

@@ -22,6 +22,7 @@ class GUI(QtGui.QMainWindow):
         self.resize(1000, 600)
         self.setWindowTitle('PySched GUI v{} (PySide)'.format(self.pySchedUI.version))
 
+
         self.mainWidget = MainWidget(parent=self)
         self.setCentralWidget(self.mainWidget)
         self.isConnected = False

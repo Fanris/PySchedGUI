@@ -4,7 +4,6 @@ Created on 2013-06-04 12:25
 @summary: 
 @author: Martin Predki
 '''
-
 from PySide import QtCore, QtGui
 
 from PySchedGUI.GUI.Widgets.UserTable import UserTable

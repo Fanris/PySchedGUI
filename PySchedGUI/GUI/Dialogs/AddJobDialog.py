@@ -50,6 +50,7 @@ class AddJobDialog(QtGui.QDialog):
         self.formLayout_2.setRowWrapPolicy(QtGui.QFormLayout.WrapAllRows)
         self.formLayout_2.setContentsMargins(0, 0, 0, 0)
 
+
         self.label_3 = QtGui.QLabel(self.formLayoutWidget_2)
         self.label_3.setText("Multiple CPUs")
         self.label_3.setWhatsThis(MULTI_CPU_HELP)
@@ -166,6 +167,7 @@ class AddJobDialog(QtGui.QDialog):
     def openTemplate(self, templatePath=None):
         if not templatePath:
             templatePath = QtGui.QFileDialog.getOpenFileName(self, "Select a Template file")[0]        
+
        
         if templatePath:
             info = TemplateParser.ParseTemplate(str(templatePath))

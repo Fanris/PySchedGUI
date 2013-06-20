@@ -7,7 +7,9 @@
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PySide import QtCore, QtGui
+
 
 class LoginDialog(QtGui.QDialog):
     def __init__(self, parent=None, rsa=None):
@@ -28,6 +30,7 @@ class LoginDialog(QtGui.QDialog):
         self.formLayout = QtGui.QFormLayout(self.formLayoutWidget)
         self.formLayout.setRowWrapPolicy(QtGui.QFormLayout.WrapAllRows)
         self.formLayout.setContentsMargins(0, 0, 0, 0)
+
 
         self.label = QtGui.QLabel(self.formLayoutWidget)
         self.label.setText("User ID:")
@@ -66,3 +69,4 @@ class LoginDialog(QtGui.QDialog):
 
     def openFileDialog(self):
         self.rsaEdit.setText(QtGui.QFileDialog.getOpenFileName(self, "Select a RSA-Keyfile")[0])
+

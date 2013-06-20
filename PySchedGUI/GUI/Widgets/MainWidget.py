@@ -20,6 +20,7 @@ class MainWidget(QtGui.QSplitter):
     def __init__(self, parent=None):
         self.ui = parent.pySchedUI
         QtGui.QSplitter.__init__(self, parent)
+
         self.setOrientation(QtCore.Qt.Vertical)
 
         self.upperSplitterWidget = QtGui.QWidget()
