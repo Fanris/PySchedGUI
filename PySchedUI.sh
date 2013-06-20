@@ -6,7 +6,10 @@ Created on 2013-01-15 13:23
 @author: predki
 '''
 
+from PyQt4 import QtGui
+
 from PySchedGUI.PySchedUI import PySchedUI
+from PySchedGUI.GUI import GUI
 from PySchedGUI.UI import UI
 
 import argparse
@@ -26,6 +29,9 @@ def main():
 
     uiParser = subparser.add_parser('ui', help='Starts the console based user interface')
     uiParser.set_defaults(func=ui)
+
+    guiParser = subparser.add_parser('gui', help='Starts the graphical user interface')
+    guiParser.set_defaults(func=gui)
     
     addJobParser = subparser.add_parser('addjob', help='Directly schedules a Job from a template')
     addJobParser.add_argument("template", help='The job template to schedule')
@@ -36,6 +42,16 @@ def main():
 
 def addJob(args):
     PySchedUI(args, cmd="addJob")
+
+def gui(args):
+    QtGui.QApplication.setStyle('Plastique')
+    CONST_APP = QtGui.QApplication([""])
+
+    pySchedUI = PySchedUI(args, cmd=None)
+    mainWindow = GUI(pySchedUI)
+    
+    mainWindow.showGUI()
+    sys.exit(CONST_APP.exec_())    
 
 def ui(args):
     pySchedUI = PySchedUI(args, cmd=None)
