@@ -1,6 +1,6 @@
 from PyQt4 import QtCore, QtGui
 
-from PySchedGUI.GUI import Icons
+from JobTableItem import JobTableItem
 
 class JobTable(QtGui.QTableWidget):
     def __init__(self, mainWidget, parent=None):
@@ -67,30 +67,9 @@ class JobTable(QtGui.QTableWidget):
         self.setRowCount(len(jobs))
         row = 0
         for job in jobs:
-            try:
-                stateIdItem = QtGui.QTableWidgetItem()
-                if "RUNNING" in job.get("stateId", ""):
-                    stateIdItem.setIcon(QtGui.QIcon(":/images/running.png"))
-                elif "DONE" in job.get("stateId", ""):
-                    stateIdItem.setIcon(QtGui.QIcon(":/images/done.png"))
-                elif "ERROR" in job.get("stateId", "") or \
-                    "ABORTED" in job.get("stateId", ""):
-                    stateIdItem.setIcon(QtGui.QIcon(":/images/error.png"))
-                else:
-                    stateIdItem.setIcon(QtGui.QIcon(":/images/clock.png"))
+            jobItem = JobTableItem(job)
+            jobItem.addToTable(row, self)
 
-                self.setItem(row, 0, stateIdItem)
-            except:
-                pass
-                
-            self.setItem(row, 1, QtGui.QTableWidgetItem(str(job.get("jobId", None))))
-            self.setItem(row, 2, QtGui.QTableWidgetItem(str(job.get("userId", None))))
-            self.setItem(row, 3, QtGui.QTableWidgetItem(str(job.get("jobName", None))))
-            self.setItem(row, 4, QtGui.QTableWidgetItem(str(job.get("stateId", None))))
-            self.setItem(row, 5, QtGui.QTableWidgetItem(str(job.get("added", None))))
-            self.setItem(row, 6, QtGui.QTableWidgetItem(str(job.get("started", None))))
-            self.setItem(row, 7, QtGui.QTableWidgetItem(str(job.get("finished", None))))
-            self.setItem(row, 8, QtGui.QTableWidgetItem(str(job.get("workstation", None))))
             row += 1
 
         self.horizontalHeader().resizeSections(QtGui.QHeaderView.ResizeToContents)
@@ -153,3 +132,18 @@ class JobTable(QtGui.QTableWidget):
 
     def getItemText(self, row, column):
         return self.item(row, column).text()
+
+    def getSelectedJobs(self):
+        jobIds = []
+        selectedRows = self.getSelectedRows()
+        for row in selectedRows:
+            jobIds.append(self.getItemText(row, 1))
+
+        return jobIds
+
+    def selectJobIds(self, jobIds):
+        for index in range(0, self.rowCount()):
+            jobId = self.item(index, 1).text()
+            if jobId in jobIds:
+                self.setRangeSelected(QtGui.QTableWidgetSelectionRange(
+                    index, 0, index, 8), True)

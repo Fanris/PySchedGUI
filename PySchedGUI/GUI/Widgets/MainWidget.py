@@ -69,11 +69,17 @@ class MainWidget(QtGui.QSplitter):
 
 
     def updateTables(self):
+        selectedJobs = self.jobTable.getSelectedJobs()
+        selectedWs = self.wsTable.getSelectedWorkstations()
+
         jobs = self.ui.getJobs(archived=False, adminMode=self.parent().adminMode)
-        self.jobTable.updateTable(jobs)
+        self.jobTable.updateTable(jobs)        
+        self.jobTable.selectJobIds(selectedJobs)
 
         ws, server = self.ui.getWorkstations()
         self.wsTable.updateTable(ws, server)
+        self.wsTable.selectWorkstations(selectedWs)
+
 
     def addJobs(self, paths):
         failed = []

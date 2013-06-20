@@ -8,7 +8,7 @@ class WSTable(QtGui.QTableWidget):
         self.mainWidget = mainWidget
 
         self.setAlternatingRowColors(True)
-        self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.horizontalHeader().setHighlightSections(False)
         self.horizontalHeader().setCascadingSectionResizes(True)
@@ -77,6 +77,9 @@ class WSTable(QtGui.QTableWidget):
         elif action == maintenanceAction:
             self.mainWidget.setMaintenanceMode()
 
+    def getItemText(self, row, column):
+        return self.item(row, column).text()
+
     def getSelectedRows(self):
         rows=[]
         for idx in self.selectedIndexes():
@@ -89,4 +92,19 @@ class WSTable(QtGui.QTableWidget):
         items = []
         for index in rows:
             items.append(self.currentItems[index])
-        return items
+        return items        
+
+    def getSelectedWorkstations(self):
+        workstations = []
+        selectedRows = self.getSelectedRows()
+        for row in selectedRows:
+            workstations.append(self.getItemText(row, 1))
+
+        return workstations
+
+    def selectWorkstations(self, workstations):
+        for index in range(0, self.rowCount()):
+            workstation = self.item(index, 1).text()
+            if workstation in workstations:
+                self.setRangeSelected(QtGui.QTableWidgetSelectionRange(
+                    index, 0, index, 9), True)

@@ -61,7 +61,12 @@ class GUI(QtGui.QMainWindow):
                 self.disconnectAct.setEnabled(False)
                 self.exit()
         else:
-            self.openConnection()        
+            self.openConnection()
+
+        self.timer = QtCore.QTimer(parent=self)
+        self.timer.setInterval(10000)
+        QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.mainWidget.updateTables)
+        self.timer.start()
 
     def openConnection(self):
         if self.pySchedUI.openConnection():
@@ -107,16 +112,12 @@ class GUI(QtGui.QMainWindow):
 
         self.adminModeCheckBox = QtGui.QCheckBox("Admin Mode")
         QtCore.QObject.connect(self.adminModeCheckBox, QtCore.SIGNAL("stateChanged(int)"), self.changeAdminMode)
-
-        self.forceScheduleBtn = QtGui.QPushButton("Force Scheduling")
-        QtCore.QObject.connect(self.forceScheduleBtn, QtCore.SIGNAL("clicked()"), self.forceScheduling)
        
         self.adminToolBar = QtGui.QToolBar("Admin Toolbar")        
         self.addToolBar(self.adminToolBar)
         self.adminToolBar.addWidget(spacer)
 
         self.adminToolBar.addWidget(self.adminModeCheckBox)
-        self.adminToolBar.addWidget(self.forceScheduleBtn)
         act = self.adminToolBar.addAction(QtGui.QIcon(":images/adminMode.png"), "Admin Menu")
         QtCore.QObject.connect(act, QtCore.SIGNAL("triggered()"), self.showAdminMenu)
 
