@@ -132,38 +132,18 @@ class MainWidget(QtGui.QSplitter):
             self.updateTables()
 
     def pauseJob(self):
-        rows = self.jobTable.getSelectedRows()      
+        jobIds = self.jobTable.getSelectedJobs()      
 
-        selectedJobs = []
-        for row in rows:
-            jobId = str(self.jobTable.item(row, 1).text())
-            jobState = str(self.jobTable.item(row, 3).text())
-            if jobState in ["RUNNING"]:
-                selectedJobs.append(jobId)
-
-        self.ui.pauseJobs(selectedJobs)
+        self.ui.pauseJobs(jobIds)
         self.updateTables() 
 
     def resumeJob(self):
-        rows = self.jobTable.getSelectedRows()
-
-        selectedJobs = []
-        for row in rows:
-            jobId = str(self.jobTable.item(row, 1).text())
-            jobState = str(self.jobTable.item(row, 3).text())
-            if jobState in ["PAUSED"]:
-                selectedJobs.append(jobId)
-
+        selectedJobs = self.jobTable.getSelectedJobs()
         self.ui.resumeJobs(selectedJobs)
         self.updateTables()
     
     def abortJob(self):
-        rows = self.jobTable.getSelectedRows()         
-
-        selectedJobs = []
-        for row in rows:
-            jobId = str(self.jobTable.item(row, 1).text())
-            selectedJobs.append(jobId)
+        selectedJobs = self.jobTable.getSelectedJobs()
 
         self.ui.abortJobs(selectedJobs)
         self.updateTables()          
@@ -181,9 +161,9 @@ class MainWidget(QtGui.QSplitter):
         self.updateTables()
 
     def showJobDetails(self):
-        rows = self.jobTable.getSelectedRows()
-        if len(rows) > 0:
-            jobId = str(self.jobTable.item(rows[0], 1).text())
+        jobIds = self.jobTable.getSelectedJobs()
+        if len(jobIds) == 1:
+            jobId = jobIds[0]
             jobLog = self.ui.getJobLog(jobId)
             jobLogDialog = JobInfoDialog(jobLog)
             jobLogDialog.exec_()
@@ -193,10 +173,10 @@ class MainWidget(QtGui.QSplitter):
         for path in QtGui.QFileDialog.getOpenFileNames(self, "Select Files which will be added to the job"):
             paths.append(str(path))
 
-        rows = self.jobTable.getSelectedRows()
-        if len(paths) > 0 and len(rows) == 1:
+        jobIds = self.jobTable.getSelectedJobs()
+        if len(paths) > 0 and len(jobIds) == 1:
             self.ui.logger.debug("Updating Job...")
-            if not self.ui.updateJobData(str(self.jobTable.item(rows[0], 1).text()), paths):
+            if not self.ui.updateJobData(jobIds[0], paths):
                 QtGui.QMessageBox.warning(self,
                     "Failure",
                     "The job could not be updated!",
