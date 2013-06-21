@@ -439,7 +439,7 @@ class PySchedUI(object):
     def shutdownWs(self, listOfWorkstationNames):
         for ws in listOfWorkstationNames:
             self.network.sendCommand("shutdownWorkstation", 
-                waitForResponse=False, 
+                waitForResponse=True, 
                 userId=self.userId,
                 workstationName=ws)
         return True
