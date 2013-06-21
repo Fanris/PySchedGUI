@@ -38,6 +38,7 @@ class WSTable(QtGui.QTableWidget):
         row = 0
 
         if not workstations and not server:
+            self.setRowCount(0)
             return
 
         if server:
