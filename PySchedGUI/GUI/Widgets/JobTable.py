@@ -168,7 +168,11 @@ class JobTable(QtGui.QTableWidget):
 
     def selectJobIds(self, jobIds):
         for index in range(0, self.rowCount()):
-            jobId = self.item(index, 1).text()
+            itemWidget = self.item(index, 1)
+            if not itemWidget:
+                continue
+
+            jobId = itemWidget.text()
             if jobId in jobIds:
                 self.setRangeSelected(QtGui.QTableWidgetSelectionRange(
                     index, 0, index, 8), True)
