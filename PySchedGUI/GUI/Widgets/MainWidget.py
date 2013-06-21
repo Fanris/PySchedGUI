@@ -189,6 +189,7 @@ class MainWidget(QtGui.QSplitter):
             QtGui.QMessageBox.Ok | QtGui.QMessageBox.No,
             QtGui.QMessageBox.No) == QtGui.QMessageBox.Ok:
             self.ui.shutdownAll()
+            self.parent().closeConnection()
 
     def shutdownWS(self):
         workstations = self.wsTable.getSelectedWorkstations()

@@ -96,8 +96,7 @@ class GUI(QtGui.QMainWindow):
         self.disconnectAct.setEnabled(False)      
         self.mainWidget.setEnabled(False)
         self.statusBar().showMessage("Disconnected by User")
-        if self.adminToolBar:
-            self.removeToolbar(self.adminToolBar)
+        self.timer.stop()
 
     def center(self):
         screen = QtGui.QDesktopWidget().screenGeometry()
