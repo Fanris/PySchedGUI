@@ -104,7 +104,11 @@ class WSTable(QtGui.QTableWidget):
 
     def selectWorkstations(self, workstations):
         for index in range(0, self.rowCount()):
-            workstation = self.item(index, 1).text()
+            itemWidget = self.item(index, 1)
+            if not itemWidget:
+                continue
+
+            workstation = itemWidget.text()
             if workstation in workstations:
                 self.setRangeSelected(QtGui.QTableWidgetSelectionRange(
                     index, 0, index, 9), True)
