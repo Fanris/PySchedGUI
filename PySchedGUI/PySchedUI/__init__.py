@@ -429,7 +429,7 @@ class PySchedUI(object):
         return False
 
     def shutdownServer(self):
-        self.network.sendCommand("shutdown", waitForResponse=True, userId=self.userId)
+        self.network.sendCommand("shutdown", waitForResponse=False, userId=self.userId)
         return True
 
     def shutdownAll(self):
