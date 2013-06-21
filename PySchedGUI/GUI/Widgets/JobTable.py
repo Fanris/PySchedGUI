@@ -162,6 +162,10 @@ class JobTable(QtGui.QTableWidget):
         jobIds = []
         selectedRows = self.getSelectedRows()
         for row in selectedRows:
+            itemWidget = self.item(row, 1)
+            if not itemWidget:
+                continue
+
             jobIds.append(str(self.getItemText(row, 1)))
 
         return jobIds

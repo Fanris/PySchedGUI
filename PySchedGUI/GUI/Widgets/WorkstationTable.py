@@ -98,6 +98,10 @@ class WSTable(QtGui.QTableWidget):
         workstations = []
         selectedRows = self.getSelectedRows()
         for row in selectedRows:
+            itemWidget = self.item(row, 1)
+            if not itemWidget:
+                continue
+                
             workstations.append(str(self.getItemText(row, 1)))
 
         return workstations
