@@ -62,6 +62,7 @@ class JobTable(QtGui.QTableWidget):
         self.clearContents()
 
         if not jobs:
+            self.setRowCount(0)
             return
 
         self.setRowCount(len(jobs))
