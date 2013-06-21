@@ -66,8 +66,7 @@ class GUI(QtGui.QMainWindow):
 
         self.timer = QtCore.QTimer(parent=self)
         self.timer.setInterval(10000)
-        QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.mainWidget.updateTables)
-        self.timer.start()
+        QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.mainWidget.updateTables)        
 
     def openConnection(self):
         if self.pySchedUI.openConnection():
@@ -80,6 +79,7 @@ class GUI(QtGui.QMainWindow):
                 self.showAdminToolBar()
                 
             self.mainWidget.updateTables()
+            self.timer.start()
         else:
             self.statusBar().showMessage("Connection failed!")
             self.isConnected = False
@@ -87,6 +87,7 @@ class GUI(QtGui.QMainWindow):
             self.disconnectAct.setEnabled(False)
             if self.adminToolBar:
                 self.adminToolBar.setEnabled(False)
+            self.timer.stop()
 
     def closeConnection(self):
         self.pySchedUI.closeConnection()   

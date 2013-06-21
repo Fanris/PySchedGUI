@@ -191,10 +191,8 @@ class MainWidget(QtGui.QSplitter):
             self.ui.shutdownAll()
 
     def shutdownWS(self):
-        workstations = []
-        for row in self.wsTable.getSelectedRows():
-            workstations.append(str(self.wsTable.item(row, 0).text()))
-
+        workstations = self.wsTable.getSelectedWorkstations()
+        
         if len(workstations) > 0:
             if QtGui.QMessageBox.question(self, 
                 "Shutting down", 

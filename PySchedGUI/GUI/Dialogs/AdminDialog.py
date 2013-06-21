@@ -40,6 +40,10 @@ class AdminDialog(QtGui.QDialog):
         checkJobsBtn.setGeometry(QtCore.QRect(10, 44, 120, 24))
         QtCore.QObject.connect(forceSchedulingBtn, QtCore.SIGNAL("clicked()"), self.pySchedUI.checkJobs)
 
+        shutdownServerBtn = QtGui.QPushButton("Shutdown Server", parent=self.controlWidget)
+        shutdownServerBtn.setGeometry(QtCore.QRect(10, 78, 120, 24))
+        QtCore.QObject.connect(shutdownServerBtn, QtCore.SIGNAL("clicked()"), self.shutdownServer)
+
         self.tabWidget.addTab(self.controlWidget, "General")
 
         # ===== USER WIDGET
@@ -165,3 +169,12 @@ class AdminDialog(QtGui.QDialog):
             QtGui.QMessageBox.No) == QtGui.QMessageBox.Ok:
             self.pySchedUI.deleteProgram(programName)
             self.programTable.updateTable(self.pySchedUI.getPrograms())     
+
+    def shutdownServer(self):
+        if QtGui.QMessageBox.question(self, 
+            "Shutdown Server...", 
+            "Are you sure you want to shutdown the server?",
+            QtGui.QMessageBox.Ok | QtGui.QMessageBox.No,
+            QtGui.QMessageBox.No) == QtGui.QMessageBox.Ok:
+            self.pySchedUI.shutdownServer()
+            self.parent().closeConnection()
