@@ -27,6 +27,10 @@ class GUI(QtGui.QMainWindow):
         self.setCentralWidget(self.mainWidget)
         self.isConnected = False
 
+        self.timer = QtCore.QTimer(parent=self)
+        self.timer.setInterval(10000)
+        QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.mainWidget.updateTables)          
+
         menubar = self.menuBar()
         fileMenu = menubar.addMenu('&File')
         act = fileMenu.addAction("New Job")
@@ -62,11 +66,7 @@ class GUI(QtGui.QMainWindow):
                 self.disconnectAct.setEnabled(False)
                 self.exit()
         else:
-            self.openConnection()
-
-        self.timer = QtCore.QTimer(parent=self)
-        self.timer.setInterval(10000)
-        QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.mainWidget.updateTables)        
+            self.openConnection()      
 
     def openConnection(self):
         if self.pySchedUI.openConnection():
