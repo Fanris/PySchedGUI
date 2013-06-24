@@ -160,7 +160,7 @@ class GUI(QtGui.QMainWindow):
         self.mainWidget.updateTables()
 
     def exit(self):
-        self.pySchedUI.closeConnection()
+        self.closeConnection()
         self.close()
 
     def forceScheduling(self):

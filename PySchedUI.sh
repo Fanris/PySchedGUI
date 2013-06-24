@@ -51,7 +51,10 @@ def gui(args):
     mainWindow = GUI(pySchedUI)
     
     mainWindow.showGUI()
-    sys.exit(CONST_APP.exec_())    
+    CONST_APP.exec_()
+    mainWindow.exit()
+    
+    sys.exit()    
 
 def ui(args):
     pySchedUI = PySchedUI(args, cmd=None)
