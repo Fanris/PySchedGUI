@@ -69,6 +69,9 @@ class WSTable(QtGui.QTableWidget):
         shutdownWSAction = menu.addAction("Shutdown Workstation(s)")    
         shutdownWSAction.setEnabled(self.mainWidget.ui.isAdmin)
 
+        menu.addSeparator()
+        updateAction = menu.addAction("Update Workstation software")
+        updateAction.setEnabled(self.mainWidget.ui.isAdmin)
 
         action = menu.exec_(self.mapToGlobal(event.pos()))
         if action == shutdownWSAction:
@@ -77,6 +80,8 @@ class WSTable(QtGui.QTableWidget):
             self.mainWidget.shutdownAll()
         elif action == maintenanceAction:
             self.mainWidget.setMaintenanceMode()
+        elif action == updateAction:
+            self.mainWidget.updateWorkstations()
 
     def getItemText(self, row, column):
         return self.item(row, column).text()
