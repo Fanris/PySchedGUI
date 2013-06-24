@@ -47,6 +47,89 @@ class AdminDialog(QtGui.QDialog):
 
         self.tabWidget.addTab(self.controlWidget, "General")
 
+        # ===== Scheduling Parameter
+        self.schedulingParams = {} #self.pySchedUI.getSchedulingParams()
+        self.schedulingParamsTab = QtGui.QWidget()
+        self.schedulingParamWidget = QtGui.QWidget()
+        self.schedulingParamWidget.setGeometry(QtCore.QRect(10, 10, 680, 290))
+
+        self.updateBtn = QtGui.QPushButton("Update", parent=self.schedulingParamsTab)
+        self.updateBtn.setGeometry(QtCore.QRect(570, 300, 120, 30))
+        self.updateBtn.setEnabled(False)
+        QtCore.QObject.connect(self.updateBtn, QtCore.SIGNAL("clicked()", self.updateSchedulingParams))
+
+        self.formLayout = QtGui.QFormLayout(self.schedulingParamWidget)
+        self.formLayout.setRowWrapPolicy(QtGui.QFormLayout.WrapAllRows)
+        self.formLayout.setContentsMargins(10, 10, 10, 10)
+
+        label = QtGui.QLabel(self.schedulingParamWidget)
+        label.setText("CPU load threshold:")
+        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, label)
+        
+        self.cpuThresholdWidget = QtGui.QSpinBox(self.schedulingParamWidget)
+        self.cpuThresholdWidget.setMinimum(0)
+        self.cpuThresholdWidget.setMaximum(101)
+        self.cpuThresholdWidget.setValue(self.schedulingParams.get("cpuThreshold", 20))               
+        self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.cpuThresholdWidget)
+        QtCore.QObject.connect(self.cpuThresholdWidget, QtCore.SIGNAL("valueChanged(int)"), self.enableUpdateBtn)      
+
+        label = QtGui.QLabel(self.schedulingParamWidget)
+        label.setText("Unused cpu penality:")
+        self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, label)
+        
+        self.unusedCpuPenalityWidget = QtGui.QSpinBox(self.schedulingParamWidget)
+        self.unusedCpuPenalityWidget.setMinimum(0)
+        self.unusedCpuPenalityWidget.setMaximum(10000)
+        self.unusedCpuPenalityWidget.setValue(self.schedulingParams.get("unusedCpuPenality", 100))
+        self.formLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.unusedCpuPenalityWidget)
+        QtCore.QObject.connect(self.unusedCpuPenalityWidget, QtCore.SIGNAL("valueChanged(int)"), self.enableUpdateBtn)
+
+        label = QtGui.QLabel(self.schedulingParamWidget)
+        label.setText("Usable cpu bonus:")
+        self.formLayout.setWidget(2, QtGui.QFormLayout.LabelRole, label)
+        
+        self.usableCpuBonusWidget = QtGui.QSpinBox(self.schedulingParamWidget)
+        self.usableCpuBonusWidget.setMinimum(0)
+        self.usableCpuBonusWidget.setMaximum(10000)
+        self.usableCpuBonusWidget.setValue(self.schedulingParams.get("usableCpuBonus", 100))
+        self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.usableCpuBonusWidget)
+        QtCore.QObject.connect(self.usableCpuBonusWidget, QtCore.SIGNAL("valueChanged(int)"), self.enableUpdateBtn)
+
+        label = QtGui.QLabel(self.schedulingParamWidget)
+        label.setText("Unused program penality:")
+        self.formLayout.setWidget(3, QtGui.QFormLayout.LabelRole, label)
+        
+        self.unusedProgramPenalityWidget = QtGui.QSpinBox(self.schedulingParamWidget)
+        self.unusedProgramPenalityWidget.setMinimum(0)
+        self.unusedProgramPenalityWidget.setMaximum(10000)
+        self.unusedProgramPenalityWidget.setValue(self.schedulingParams.get("unsedProgramPenality", 100))
+        self.formLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.unusedProgramPenalityWidget)        
+        QtCore.QObject.connect(self.unusedProgramPenalityWidget, QtCore.SIGNAL("valueChanged(int)"), self.enableUpdateBtn)
+
+        label = QtGui.QLabel(self.schedulingParamWidget)
+        label.setText("Active user penality:")
+        self.formLayout.setWidget(4, QtGui.QFormLayout.LabelRole, label)
+        
+        self.activeUserPenalityWidget = QtGui.QSpinBox(self.schedulingParamWidget)
+        self.activeUserPenalityWidget.setMinimum(0)
+        self.activeUserPenalityWidget.setMaximum(10000)
+        self.activeUserPenalityWidget.setValue(self.schedulingParams.get("activeUserPenality", 100))
+        self.formLayout.setWidget(4, QtGui.QFormLayout.FieldRole, self.activeUserPenalityWidget)   
+        QtCore.QObject.connect(self.activeUserPenalityWidget, QtCore.SIGNAL("valueChanged(int)"), self.enableUpdateBtn) 
+
+        label = QtGui.QLabel(self.schedulingParamWidget)
+        label.setText("Reserved cpus for users:")
+        self.formLayout.setWidget(5, QtGui.QFormLayout.LabelRole, label)
+        
+        self.cpusForUsersWidget = QtGui.QSpinBox(self.schedulingParamWidget)
+        self.cpusForUsersWidget.setMinimum(0)
+        self.cpusForUsersWidget.setMaximum(10000)
+        self.cpusForUsersWidget.setValue(self.schedulingParams.get("cpusForUsers", 1))
+        self.formLayout.setWidget(5, QtGui.QFormLayout.FieldRole, self.cpusForUsersWidget)
+        QtCore.QObject.connect(self.cpusForUsersWidget, QtCore.SIGNAL("valueChanged(int)"), self.enableUpdateBtn)
+
+        self.tabWidget.addTab(self.schedulingParamWidget, "Scheduling Parameter")
+
         # ===== USER WIDGET
         self.userWidget = QtGui.QWidget()
         newUserBtn = QtGui.QPushButton("New User", parent=self.userWidget)
@@ -179,3 +262,17 @@ class AdminDialog(QtGui.QDialog):
             QtGui.QMessageBox.No) == QtGui.QMessageBox.Ok:
             self.pySchedUI.shutdownServer()
             self.parent().closeConnection()
+
+    def enableUpdateBtn(self):
+        self.updateBtn.setEnabled(True)
+
+    def updateSchedulingParams(self):
+        schedulingParams = {
+            "cpuThreshold": self.cpuThresholdWidget.value(),
+            "unusedCpuPenality": self.unusedCpuPenalityWidget.value(),
+            "usableCpuBonus": self.usableCpuBonusWidget.value(),
+            "unusedProgramPenality": self.unusedProgramPenalityWidget.value(),
+            "cpusForUsers": self.cpusForUsersWidget.value(),
+            "activeUserPenality": self.activeUserPenalityWidget.value(),
+        }
+        self.pySchedUI.updateSchedulingParams(schedulingParams)
