@@ -48,15 +48,15 @@ class AdminDialog(QtGui.QDialog):
         self.tabWidget.addTab(self.controlWidget, "General")
 
         # ===== Scheduling Parameter
-        self.schedulingParams = {} #self.pySchedUI.getSchedulingParams()
+        self.schedulingParams = self.pySchedUI.getSchedulingParams()
         self.schedulingParamsTab = QtGui.QWidget()
-        self.schedulingParamWidget = QtGui.QWidget()
-        self.schedulingParamWidget.setGeometry(QtCore.QRect(10, 10, 680, 290))
+        self.schedulingParamWidget = QtGui.QWidget(self.schedulingParamsTab)
+        self.schedulingParamWidget.setGeometry(QtCore.QRect(10, 10, 680, 270))
 
         self.updateBtn = QtGui.QPushButton("Update", parent=self.schedulingParamsTab)
-        self.updateBtn.setGeometry(QtCore.QRect(570, 300, 120, 30))
+        self.updateBtn.setGeometry(QtCore.QRect(570, 280, 120, 30))
         self.updateBtn.setEnabled(False)
-        QtCore.QObject.connect(self.updateBtn, QtCore.SIGNAL("clicked()", self.updateSchedulingParams))
+        QtCore.QObject.connect(self.updateBtn, QtCore.SIGNAL("clicked()"), self.updateSchedulingParams)
 
         self.formLayout = QtGui.QFormLayout(self.schedulingParamWidget)
         self.formLayout.setRowWrapPolicy(QtGui.QFormLayout.WrapAllRows)
@@ -128,7 +128,7 @@ class AdminDialog(QtGui.QDialog):
         self.formLayout.setWidget(5, QtGui.QFormLayout.FieldRole, self.cpusForUsersWidget)
         QtCore.QObject.connect(self.cpusForUsersWidget, QtCore.SIGNAL("valueChanged(int)"), self.enableUpdateBtn)
 
-        self.tabWidget.addTab(self.schedulingParamWidget, "Scheduling Parameter")
+        self.tabWidget.addTab(self.schedulingParamsTab, "Scheduling Parameter")
 
         # ===== USER WIDGET
         self.userWidget = QtGui.QWidget()
@@ -276,3 +276,4 @@ class AdminDialog(QtGui.QDialog):
             "activeUserPenality": self.activeUserPenalityWidget.value(),
         }
         self.pySchedUI.updateSchedulingParams(schedulingParams)
+        self.updateBtn.setEnabled(False)
