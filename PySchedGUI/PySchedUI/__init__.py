@@ -493,7 +493,7 @@ class PySchedUI(object):
 
     def updateWorkstations(self, workstations):
         for workstationName in workstations:
-            if workstationName == "server":
+            if "server" in workstationName:
                 workstationName = None
                 
             param = {
