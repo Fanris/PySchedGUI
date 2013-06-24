@@ -506,3 +506,15 @@ class PySchedUI(object):
         returnValue = self.network.sendCommand("updatePySched", **uiDict)
         if returnValue:
             return returnValue.get("result", False)
+
+    def updateSchedulingParams(self, params):
+        returnValue = self.network.sendCommand("updateSchedulingParams",
+            params=params,
+            userId=self.userId)
+        if returnValue:
+            return returnValue.get("result", False)
+
+    def getSchedulingParams(self):
+        returnValue = self.network.sendCommand("getSchedulingParams", userId=self.userId)
+        if returnValue and returnValue.get("result", False):
+            return returnValue.get("params", {})
