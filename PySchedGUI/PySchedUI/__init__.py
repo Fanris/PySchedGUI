@@ -490,3 +490,19 @@ class PySchedUI(object):
         returnValue = self.network.sendCommand("getFileFromWS", **uiDict)
         if returnValue:
             return returnValue.get("content", [])
+
+    def updateWorkstations(self, workstations):
+        for workstationName in workstations:
+            if "server" in workstationName:
+                workstationName = None
+                
+            param = {
+                "userId": self.userId,
+                "workstationName": workstationName
+            }
+            return self._updateWorkstation(param)
+
+    def _updateWorkstation(self, uiDict):
+        returnValue = self.network.sendCommand("updatePySched", **uiDict)
+        if returnValue:
+            return returnValue.get("result", False)

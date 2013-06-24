@@ -225,3 +225,12 @@ class MainWidget(QtGui.QSplitter):
                 content = self.ui.getFileContent(jobId, str(jobFolderDialog.getSelectedFile()))
                 jobLogDialog = JobInfoDialog(content)
                 jobLogDialog.exec_()
+
+    def updateWorkstations(self):
+        workstations = self.wsTable.getSelectedWorkstations()
+        if QtGui.QMessageBox.question(self, 
+            "Software update...", 
+            "Are you sure, you want to update these workstations?\n{}\nAll currently running jobs are aborted!".format(workstations),
+            QtGui.QMessageBox.Ok | QtGui.QMessageBox.No,
+            QtGui.QMessageBox.No) == QtGui.QMessageBox.Ok:
+            self.ui.updateWorkstations(workstations)         
