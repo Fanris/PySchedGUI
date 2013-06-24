@@ -26,11 +26,11 @@ class AddJobDialog(QtGui.QDialog):
 
         self.label = QtGui.QLabel(self.formLayoutWidget)
         self.label.setText("Job Name")
-
         self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.label)
+        
         self.jobNameWidget = QtGui.QLineEdit(self.formLayoutWidget)
-
         self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.jobNameWidget)
+
         self.label_2 = QtGui.QLabel(self.formLayoutWidget)
         self.label_2.setText("Job Description:")
 
