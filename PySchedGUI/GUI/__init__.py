@@ -89,13 +89,17 @@ class GUI(QtGui.QMainWindow):
             self.timer.stop()
 
     def closeConnection(self):
-        self.pySchedUI.closeConnection()   
+        try:
+            self.pySchedUI.closeConnection()   
+        except:
+            pass
+            
         self.isConnected = False
         self.connectAct.setEnabled(True)
         self.disconnectAct.setEnabled(False)      
         self.mainWidget.setEnabled(False)
         self.statusBar().showMessage("Disconnected by User")
-        self.timer.stop()
+        self.timer.stop()    
 
     def center(self):
         screen = QtGui.QDesktopWidget().screenGeometry()
