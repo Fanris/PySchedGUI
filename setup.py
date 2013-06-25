@@ -11,7 +11,7 @@ setup(name='PySchedGUI',
       license='LGPL',
       packages=[
             'PySchedGUI',
-            'PySchedGUI.GUI'
+            'PySchedGUI.GUI',
             'PySchedGUI.UI',
             'PySchedGUI.PySchedUI',            
             'PySchedGUI.PySchedUI.Network'],
