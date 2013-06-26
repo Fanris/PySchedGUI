@@ -44,17 +44,20 @@ def addJob(args):
     PySchedUI(args, cmd="addJob")
 
 def gui(args):
-    QtGui.QApplication.setStyle('Plastique')
-    CONST_APP = QtGui.QApplication([""])
+    try:
+        QtGui.QApplication.setStyle('Plastique')
+        CONST_APP = QtGui.QApplication([""])
 
-    pySchedUI = PySchedUI(args, cmd=None)
-    mainWindow = GUI(pySchedUI)
-    
-    mainWindow.showGUI()
-    CONST_APP.exec_()
-    mainWindow.exit()
-    
-    sys.exit()    
+        pySchedUI = PySchedUI(args, cmd=None)
+        mainWindow = GUI(pySchedUI)
+        
+        mainWindow.showGUI()
+        CONST_APP.exec_()
+        mainWindow.exit()
+        
+        sys.exit()
+    except:
+        pass
 
 def ui(args):
     pySchedUI = PySchedUI(args, cmd=None)
