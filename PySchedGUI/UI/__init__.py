@@ -6,21 +6,21 @@ Created on 2013-01-15 11:57
 '''
 from PathCompleter import PathCompleter
 
-from AbortJobMenu import AbortJobMenu
-from AddJobMenu import AddJobMenu
-from UserMenu import UserMenu
-from DeleteJobMenu import DeleteJobMenu
-from GetJobsMenu import GetJobsMenu
-from GetJobLogMenu import GetJobLogMenu
-from GetResultsMenu import GetResultsMenu
-from SearchPathMenu import SearchPathMenu
-from ServerShutdownMenu import ServerShutdownMenu
-from WorkstationMenu import WorkstationMenu
-from PauseMenu import PauseMenu
-from ResumeMenu import ResumeMenu
-from UpdateMenu import UpdateMenu
-from UpdateWorkstationMenu import UpdateWorkstationMenu
-from RestartWorkstationMenu import RestartWorkstationMenu
+from Menus.AbortJobMenu import AbortJobMenu
+from Menus.AddJobMenu import AddJobMenu
+from Menus.UserMenu import UserMenu
+from Menus.DeleteJobMenu import DeleteJobMenu
+from Menus.GetJobsMenu import GetJobsMenu
+from Menus.GetJobLogMenu import GetJobLogMenu
+from Menus.GetResultsMenu import GetResultsMenu
+from Menus.SearchPathMenu import SearchPathMenu
+from Menus.ServerShutdownMenu import ServerShutdownMenu
+from Menus.WorkstationMenu import WorkstationMenu
+from Menus.PauseMenu import PauseMenu
+from Menus.ResumeMenu import ResumeMenu
+from Menus.UpdateMenu import UpdateMenu
+from Menus.UpdateWorkstationMenu import UpdateWorkstationMenu
+from Menus.RestartWorkstationMenu import RestartWorkstationMenu
 
 import CommonUI
 import readline
@@ -46,25 +46,27 @@ class UI(object):
         readline.parse_and_bind('tab: complete')
 
         self.functionList = [
-            {"display": "Schedule a new Job", "function": AddJobMenu(self.pySchedUI).show},
+            {"display": "Submit a new Job", "function": AddJobMenu(self.pySchedUI).show},
+            {"display": "Get workstationinformations", "function": WorkstationMenu(self.pySchedUI).show},
             {"display": "Show my Jobs", "function": GetJobsMenu(self.pySchedUI).show},
             {"display": "Show Job Logfile", "function": GetJobLogMenu(self.pySchedUI).show},
-            {"display": "Abort a Job", "function": AbortJobMenu(self.pySchedUI).show},
-            {"display": "Update a Job", "function": UpdateMenu(self.pySchedUI).show},
             {"display": "Pause a Job", "function": PauseMenu(self.pySchedUI).show},
             {"display": "Resume a Job", "function": ResumeMenu(self.pySchedUI).show},
-            {"display": "Delete a Job", "function": DeleteJobMenu(self.pySchedUI).show},
+            {"display": "Abort a Job", "function": AbortJobMenu(self.pySchedUI).show},
+            {"display": "Update a Job", "function": UpdateMenu(self.pySchedUI).show},        
             {"display": "Get Job results", "function": GetResultsMenu(self.pySchedUI).show},
-            {"display": "Get all Job results", "function": GetResultsMenu(self.pySchedUI).showGetAllResultsUI},
-            {"display": "Get workstationinformations", "function": WorkstationMenu(self.pySchedUI).show},
+            {"display": "Get all Job results", "function": GetResultsMenu(self.pySchedUI).showGetAllResultsUI},        
+            {"display": "Delete a Job", "function": DeleteJobMenu(self.pySchedUI).show},
+            {"display": "_blank"},
             {"display": "Admin: Create / Edit an user", "function": UserMenu(self.pySchedUI).show, "admin": True},
             {"display": "Admin: Add Program search Path", "function": SearchPathMenu(self.pySchedUI).show, "admin": True},
             {"display": "Admin: Force scheduling", "function": self.pySchedUI.forceSchedule, "admin": True},            
             {"display": "Admin: Force Checking Jobs", "function": self.pySchedUI.checkJobs, "admin": True},       
+            {"display": "Admin: Update Software", "function": UpdateWorkstationMenu(self.pySchedUI).show, "admin": True},            
             {"display": "Admin: Restart Workstation", "function": RestartWorkstationMenu(self.pySchedUI).show, "admin": True},   
-            {"display": "Admin: Force Server shutdown", "function": ServerShutdownMenu(self.pySchedUI).show, "admin": True},
-            {"display": "Admin: Update Software", "function": UpdateWorkstationMenu(self.pySchedUI).show, "admin": True},
+            {"display": "Admin: Force Server shutdown", "function": ServerShutdownMenu(self.pySchedUI).show, "admin": True},            
             {"display": "Admin: Shutdown all", "function": self.pySchedUI.shutdownAll, "admin": True},
+            {"display": "_blank", "admin": True},
             {"display": "Quit", "function": self.close}
         ]
 
@@ -99,12 +101,18 @@ class UI(object):
                 print "Functions:"
             print "================================================"
 
-            for functionIndex in range(0, len(self.functionList)):
+            offset = 0
+            for functionIndex in range(0, len(self.functionList)):                
+                if self.functionList[functionIndex].get("display", "") == "_blank":
+                    offset += 1
+                    print
+                    continue
+
                 if not self.functionList[functionIndex].get("admin", False) or \
                     (self.pySchedUI.isAdmin and self.functionList[functionIndex].get("admin", False)):
                     
-                    availableFunctions[functionIndex + 1] = self.functionList[functionIndex]["function"]
-                    print "{}: {}".format(str(functionIndex + 1).rjust(2), self.functionList[functionIndex]["display"])
+                    availableFunctions[functionIndex + 1 - offset] = self.functionList[functionIndex]["function"]
+                    print "{}: {}".format(str(functionIndex + 1 - offset).rjust(2), self.functionList[functionIndex]["display"])
             print
 
             selected = raw_input("What do you want to do? ")
