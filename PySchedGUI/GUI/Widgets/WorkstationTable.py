@@ -70,6 +70,8 @@ class WSTable(QtGui.QTableWidget):
         shutdownWSAction.setEnabled(self.mainWidget.ui.isAdmin)
 
         menu.addSeparator()
+        restartAction = menu.addAction("Restart Workstation(s)")
+        restartAction.setEnabled(self.mainWidget.ui.isAdmin)
         updateAction = menu.addAction("Update Workstation software")
         updateAction.setEnabled(self.mainWidget.ui.isAdmin)
 
@@ -82,6 +84,8 @@ class WSTable(QtGui.QTableWidget):
             self.mainWidget.setMaintenanceMode()
         elif action == updateAction:
             self.mainWidget.updateWorkstations()
+        elif action == restartAction:
+            self.mainWidget.restartWorkstations()
 
     def getItemText(self, row, column):
         return self.item(row, column).text()
