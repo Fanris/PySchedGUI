@@ -20,6 +20,7 @@ from PauseMenu import PauseMenu
 from ResumeMenu import ResumeMenu
 from UpdateMenu import UpdateMenu
 from UpdateWorkstationMenu import UpdateWorkstationMenu
+from RestartWorkstationMenu import RestartWorkstationMenu
 
 import CommonUI
 import readline
@@ -59,7 +60,8 @@ class UI(object):
             {"display": "Admin: Create / Edit an user", "function": UserMenu(self.pySchedUI).show, "admin": True},
             {"display": "Admin: Add Program search Path", "function": SearchPathMenu(self.pySchedUI).show, "admin": True},
             {"display": "Admin: Force scheduling", "function": self.pySchedUI.forceSchedule, "admin": True},            
-            {"display": "Admin: Force Checking Jobs", "function": self.pySchedUI.checkJobs, "admin": True},            
+            {"display": "Admin: Force Checking Jobs", "function": self.pySchedUI.checkJobs, "admin": True},       
+            {"display": "Admin: Restart Workstation", "function": RestartWorkstationMenu(self.pySchedUI).show, "admin": True},   
             {"display": "Admin: Force Server shutdown", "function": ServerShutdownMenu(self.pySchedUI).show, "admin": True},
             {"display": "Admin: Update Software", "function": UpdateWorkstationMenu(self.pySchedUI).show, "admin": True},
             {"display": "Admin: Shutdown all", "function": self.pySchedUI.shutdownAll, "admin": True},

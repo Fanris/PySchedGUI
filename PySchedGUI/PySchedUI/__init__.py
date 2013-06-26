@@ -518,3 +518,24 @@ class PySchedUI(object):
         returnValue = self.network.sendCommand("getSchedulingParams", userId=self.userId)
         if returnValue and returnValue.get("result", False):
             return returnValue.get("params", {})
+
+    def restart(self, workstations):
+        for workstationName in workstations:
+            param = {
+                "userId": self.userId,
+                "workstationName": workstationName
+            }
+            
+            if "server" in workstationName.lower():
+                self._restartServer()
+            else:
+                self._restartWorkstation(param)
+        return True
+
+    def _restartServer(self):
+        self.network.sendCommand("restart", userId=self.userId)
+
+    def _restartWorkstation(self, uiDict):
+        returnValue = self.network.sendCommand("restartWS", **uiDict)
+        if returnValue and returnValue.get("result", False):
+            return True
