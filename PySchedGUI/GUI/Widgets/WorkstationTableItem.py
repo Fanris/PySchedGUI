@@ -16,6 +16,7 @@ class WorkstationTableItem(object):
         if maintenance:
             maintenanceItem = QtGui.QTableWidgetItem()
             maintenanceItem.setIcon(QtGui.QIcon(":/images/maintenanceMode.png"))
+            maintenanceItem.setToolTip("This Workstation is currently in Maintenance mode and not available for new Jobs.")
             table.setItem(row, 0, maintenanceItem)
 
         table.setItem(row, 1, QtGui.QTableWidgetItem(str(self.info.get("workstationName", "N/A"))))
