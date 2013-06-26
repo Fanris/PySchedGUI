@@ -236,6 +236,10 @@ class MainWidget(QtGui.QSplitter):
             QtGui.QMessageBox.No) == QtGui.QMessageBox.Ok:
             self.ui.updateWorkstations(workstations)
 
+        for ws in workstations:
+            if "server" in ws.lower():
+                self.parent().closeConnection()
+
     def restartWorkstations(self):
         workstations = self.wsTable.getSelectedWorkstations()
         if QtGui.QMessageBox.question(self, 
@@ -243,4 +247,8 @@ class MainWidget(QtGui.QSplitter):
             "Are you sure, you want to restart these workstations?\n{}\nAll currently running jobs are aborted!".format(workstations),
             QtGui.QMessageBox.Ok | QtGui.QMessageBox.No,
             QtGui.QMessageBox.No) == QtGui.QMessageBox.Ok:
-            self.ui.restart(workstations)   
+            self.ui.restart(workstations)
+
+        for ws in workstations:
+            if "server" in ws.lower():
+                self.parent().closeConnection()
