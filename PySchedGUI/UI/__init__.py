@@ -6,21 +6,21 @@ Created on 2013-01-15 11:57
 '''
 from PathCompleter import PathCompleter
 
-from AbortJobMenu import AbortJobMenu
-from AddJobMenu import AddJobMenu
-from UserMenu import UserMenu
-from DeleteJobMenu import DeleteJobMenu
-from GetJobsMenu import GetJobsMenu
-from GetJobLogMenu import GetJobLogMenu
-from GetResultsMenu import GetResultsMenu
-from SearchPathMenu import SearchPathMenu
-from ServerShutdownMenu import ServerShutdownMenu
-from WorkstationMenu import WorkstationMenu
-from PauseMenu import PauseMenu
-from ResumeMenu import ResumeMenu
-from UpdateMenu import UpdateMenu
-from UpdateWorkstationMenu import UpdateWorkstationMenu
-from RestartWorkstationMenu import RestartWorkstationMenu
+from Menus.AbortJobMenu import AbortJobMenu
+from Menus.AddJobMenu import AddJobMenu
+from Menus.UserMenu import UserMenu
+from Menus.DeleteJobMenu import DeleteJobMenu
+from Menus.GetJobsMenu import GetJobsMenu
+from Menus.GetJobLogMenu import GetJobLogMenu
+from Menus.GetResultsMenu import GetResultsMenu
+from Menus.SearchPathMenu import SearchPathMenu
+from Menus.ServerShutdownMenu import ServerShutdownMenu
+from Menus.WorkstationMenu import WorkstationMenu
+from Menus.PauseMenu import PauseMenu
+from Menus.ResumeMenu import ResumeMenu
+from Menus.UpdateMenu import UpdateMenu
+from Menus.UpdateWorkstationMenu import UpdateWorkstationMenu
+from Menus.RestartWorkstationMenu import RestartWorkstationMenu
 
 import CommonUI
 import readline
