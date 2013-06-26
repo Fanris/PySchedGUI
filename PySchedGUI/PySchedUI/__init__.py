@@ -25,7 +25,7 @@ class PySchedUI(object):
         @summary: Initializes the PySchedUI
         @result:
         '''
-        self.version = "1.1.0"
+        self.version = "1.1.1"
 
         self.initializeLogger(args)
         self.debug = args.debug
