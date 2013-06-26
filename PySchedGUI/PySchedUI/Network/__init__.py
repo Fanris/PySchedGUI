@@ -156,4 +156,5 @@ class Network(object):
 
     def closeConnection(self):
         self.connection.close()
+        self.sshTunnel.closeTunnel()
 
