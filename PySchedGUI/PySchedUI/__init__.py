@@ -533,7 +533,8 @@ class PySchedUI(object):
         return True
 
     def _restartServer(self):
-        self.network.sendCommand("restart", userId=self.userId)
+        self.network.sendCommand("restart", waitForResponse=False, userId=self.userId)
+        return True
 
     def _restartWorkstation(self, uiDict):
         returnValue = self.network.sendCommand("restartWS", **uiDict)
