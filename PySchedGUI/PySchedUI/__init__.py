@@ -500,7 +500,8 @@ class PySchedUI(object):
                 "userId": self.userId,
                 "workstationName": workstationName
             }
-            return self._updateWorkstation(param)
+            self._updateWorkstation(param)
+        return True
 
     def _updateWorkstation(self, uiDict):
         returnValue = self.network.sendCommand("updatePySched", **uiDict)
