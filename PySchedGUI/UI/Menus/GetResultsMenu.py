@@ -41,10 +41,10 @@ class GetResultsMenu(IMenu):
             else:
                 return
 
-            if self.pySchedUI.getResultsByJobId([jobId], path):
-                print "Results stored in {}".format(path)
-            else:
-                print "Could not retrieve the results of job {}".format(jobId)
+        if self.pySchedUI.getResultsByJobId([jobId], path):
+            print "Results stored in {}".format(path)
+        else:
+            print "Could not retrieve the results of job {}".format(jobId)
 
     def showGetAllResultsUI(self):
         print
